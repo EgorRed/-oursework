@@ -1,0 +1,6 @@
+@AccountingForExpirationDates_HostAddress = http://localhost:5147
+
+GET {{AccountingForExpirationDates_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
