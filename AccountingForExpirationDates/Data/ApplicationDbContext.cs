@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AccountingForExpirationDates.Model.Product;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
+using AccountingForExpirationDates.Data.Entitys;
 
 namespace AccountingForExpirationDates.UserData
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
 
-        public DbSet<ProductModel> Products { get; set; }
-        public DbSet<CategoryModel> Category { get; set; }
-        public DbSet<PhotoModel> Photo { get; set; }
+        public DbSet<ProductEntity> Products { get; set; }
+        public DbSet<CategoryEntity> Category { get; set; }
+        public DbSet<PhotoEntity> Photo { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -21,15 +21,15 @@ namespace AccountingForExpirationDates.UserData
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
-            builder.Entity<ProductModel>()
+            builder.Entity<ProductEntity>()
                 .HasOne(x => x.Category)
                 .WithMany(t => t.Product)
                 .HasForeignKey(p => p.CategoryId);
 
-            builder.Entity<ProductModel>()
+            builder.Entity<ProductEntity>()
                 .HasMany(x => x.Photos)
                 .WithOne(t => t.Product)
-                .HasForeignKey(p => p.Product);
+                .HasForeignKey(p => p.ProductId);
 
             //builder.Entity<ProductModel>()
             //    .HasKey(x => x.Id);

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
-namespace AccountingForExpirationDates.Model.Product
+namespace AccountingForExpirationDates.Data.Entitys
 {
-    public class ProductModel
+    public class ProductEntity
     {
         public int Id { get; set; }
         public string BarcodeType1 { get; set; }
@@ -12,10 +12,10 @@ namespace AccountingForExpirationDates.Model.Product
         public string Name { get; set; }
 
         public DateTime SellBy { get; set; }
-        
-        public int CategoryId { get; set; }
-        public CategoryModel Category { get; set; }
 
-        public List<PhotoModel> Photos { get; set; } = new List<PhotoModel>();
+        public int CategoryId { get; set; }
+        public CategoryEntity Category { get; set; }
+
+        public List<PhotoEntity> Photos { get; set; } = new List<PhotoEntity>();
     }
 }
