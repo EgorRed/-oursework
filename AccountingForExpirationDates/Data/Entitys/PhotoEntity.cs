@@ -8,6 +8,6 @@ namespace AccountingForExpirationDates.Data.Entitys
         public int FileId { get; set; }
 
         public int ProductId { get; set; }
-        public ProductEntity Product { get; set; }
+        public ProductEntity? Product { get; set; }
     }
 }

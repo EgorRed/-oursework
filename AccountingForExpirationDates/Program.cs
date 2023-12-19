@@ -1,4 +1,6 @@
 using AccountingForExpirationDates.Data;
+using AccountingForExpirationDates.Service;
+using AccountingForExpirationDates.Service.Interfaces;
 using AccountingForExpirationDates.UserData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +51,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IDataProviderService, DataProviderService>();
 
 builder.Services.AddAuthentication(options =>
 {

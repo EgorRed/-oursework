@@ -1,6 +1,6 @@
 ﻿namespace AccountingForExpirationDates.Model.Product
 {
-    public class EditProductModel
+    public class EditSellByModel
     {
     }
 }

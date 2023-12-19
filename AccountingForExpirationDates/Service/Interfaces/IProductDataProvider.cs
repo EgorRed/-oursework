@@ -7,8 +7,9 @@ namespace AccountingForExpirationDates.Service.Interfaces
     public interface IProductDataProvider
     {
         Task AddProduct(ProductModelDto productModelDto);
-        Task EditProduct(EditSellByModel editSellByModel);
+        Task EditSellByProduct(EditSellByModel editSellByModel);
         Task DeleteProduct(DeleteProductModel deleteProductModel);
-        
+        Task SetCategory(ProductCategoryModel categoryModelDto);
+        Task<ProductEntity[]> GetAllProduct();
     }
 }
