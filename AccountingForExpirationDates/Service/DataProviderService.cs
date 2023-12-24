@@ -38,19 +38,36 @@ namespace AccountingForExpirationDates.Service
             return await _db.Products.ToArrayAsync();
         }
 
-        public Task DeleteProduct(DeleteProductModel deleteProductModel)
+        public async Task DeleteProduct(DeleteProductModel deleteProductModel)
         {
-            throw new NotImplementedException();
+            _db.Products.Remove(_db.Products.Where(x => x.Id == deleteProductModel.Id).First());
+            await _db.SaveChangesAsync();
         }
 
-        public Task EditSellByProduct(EditSellByModel editSellByModel)
+        public async Task EditSellByProduct(EditSellByModel editSellByModel)
         {
-            throw new NotImplementedException();
+             var Product = await _db.Products.Where(x => x.Id == editSellByModel.Id).FirstAsync();
+            if (Product != null) 
+            {
+                Product.SellBy = editSellByModel.SellBy;
+                await _db.SaveChangesAsync();
+            }
         }
 
-        public Task SetCategory(ProductCategoryModel categoryModelDto)
+        public async Task AddCategory(CategoryModel categoryModelDto)
         {
-            throw new NotImplementedException();
+            var categoryEntity = new CategoryEntity();
+            categoryEntity.Name = categoryModelDto.categoryName;
+            await _db.Category.AddAsync(categoryEntity);
+        }
+
+        public async Task SetCategory(ProductCategoryModel categoryModelDto)
+        {
+            var categoryEntity = new CategoryEntity();
+
+            var productEntity = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstAsync();
+            categoryEntity = await _db.Category.Where(x => x.Name == categoryModelDto.categoryName).FirstAsync();
+            productEntity.CategoryId = categoryEntity.Id;
         }
 
 

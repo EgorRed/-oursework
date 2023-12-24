@@ -28,5 +28,19 @@ namespace AccountingForExpirationDates.Controllers
         {
             return await _providerService.GetAllProduct();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveProduct(DeleteProductModel deleteProductModelDto)
+        {
+            await _providerService.DeleteProduct(deleteProductModelDto);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditSellBy(EditSellByModel editSellByModelDto)
+        {
+            await _providerService.EditSellByProduct(editSellByModelDto);
+            return Ok();
+        }
     }
 }
