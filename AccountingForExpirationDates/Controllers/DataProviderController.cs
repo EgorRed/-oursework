@@ -1,4 +1,5 @@
 ﻿using AccountingForExpirationDates.Data.Entitys;
+using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,26 @@ namespace AccountingForExpirationDates.Controllers
         {
             await _providerService.EditSellByProduct(editSellByModelDto);
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(AddCategoryModel category)
+        {
+            await _providerService.AddCategory(category);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
+        {
+            await _providerService.RemoveCategory(category);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<CategoryDto[]> GetAllCategory()
+        {
+            return await _providerService.GetAllCategory();
         }
     }
 }
