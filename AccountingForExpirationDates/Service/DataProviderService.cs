@@ -25,15 +25,32 @@ namespace AccountingForExpirationDates.Service
             productEntity.BarcodeType2 = productModelDto.BarcodeType2;
             productEntity.Name = productModelDto.Name;
             productEntity.SellBy = productModelDto.SellBy;
-            productEntity.Category = productEntity.Category;
             await _db.Products.AddAsync(productEntity);
             await _db.SaveChangesAsync();
         }
 
-        public async Task<ProductEntity[]> GetAllProduct()
+
+        public async Task<ProductModelDto[]> GetAllProduct()
         {
-            return await _db.Products.ToArrayAsync();
+            AllProductModel allProduct = new AllProductModel();
+            foreach (var product in await _db.Products.ToArrayAsync()) 
+            {
+                ProductModelDto productModelDto = new ProductModelDto();
+                productModelDto.BarcodeType1 = product.BarcodeType1;
+                productModelDto.BarcodeType2 = product.BarcodeType2;
+                productModelDto.Name = product.Name;
+                productModelDto.SellBy = product.SellBy;
+                productModelDto.categoryId = product.CategoryId;
+                if (product.Category != null)
+                {
+                    productModelDto.categoryName = product.Category.Name;
+                }
+                allProduct.Products.Add(productModelDto);
+            }
+
+            return allProduct.Products.ToArray();
         }
+
 
         public async Task DeleteProduct(DeleteProductModel deleteProductModel)
         {
@@ -51,23 +68,6 @@ namespace AccountingForExpirationDates.Service
             }
         }
 
-        //public async Task AddCategory(CategoryModel categoryModelDto)
-        //{
-        //    var categoryEntity = new CategoryEntity();
-        //    categoryEntity.Name = categoryModelDto.categoryName;
-        //    await _db.Category.AddAsync(categoryEntity);
-        //    await _db.SaveChangesAsync();
-        //}
-
-        //public async Task SetCategory(ProductCategoryModel categoryModelDto)
-        //{
-        //    var categoryEntity = new CategoryEntity();
-
-        //    var productEntity = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstAsync();
-        //    categoryEntity = await _db.Category.Where(x => x.Name == categoryModelDto.categoryName).FirstAsync();
-        //    productEntity.CategoryId = categoryEntity.Id;
-        //    await _db.SaveChangesAsync();
-        //}
 
         public async Task<CategoryDto[]> GetAllCategory()
         {
@@ -85,6 +85,7 @@ namespace AccountingForExpirationDates.Service
             return AllCategory.Categories.ToArray();
         }
 
+
         public async Task AddCategory(AddCategoryModel categoryModel)
         {
             CategoryEntity categoryEntity = new CategoryEntity();
@@ -95,17 +96,21 @@ namespace AccountingForExpirationDates.Service
 
         public async Task RemoveCategory(RemoveCategoryModel categoryModel)
         {
-            _db.Category.Remove(_db.Category.Where(x => x.Id == categoryModel.CategoryId).First());
+            var category = _db.Category.Where(x => x.Id == categoryModel.CategoryId).First();
+            category.Product.Clear();
+            _db.Category.Remove(category);
             await _db.SaveChangesAsync();
         }
 
+
         public async Task SetCategory(ProductCategoryModel categoryModelDto)
         {
-            var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstAsync();
-            var category = await _db.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstAsync();
+            //var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstAsync();
+            //var category = await _db.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstAsync();
 
-            category.Product.Add(product);
-            await _db.SaveChangesAsync();
+            //category.Product.Add(product);
+            //await _db.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

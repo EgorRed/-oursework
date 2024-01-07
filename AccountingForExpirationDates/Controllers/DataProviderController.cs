@@ -25,7 +25,7 @@ namespace AccountingForExpirationDates.Controllers
         }
 
         [HttpPost]
-        public async Task<ProductEntity[]> GetAllProduct()
+        public async Task<ProductModelDto[]> GetAllProduct()
         {
             return await _providerService.GetAllProduct();
         }
@@ -62,6 +62,15 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<CategoryDto[]> GetAllCategory()
         {
             return await _providerService.GetAllCategory();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
+        {
+
+            await _providerService.SetCategory(productCategoryModel);
+
+            return Ok();
         }
     }
 }

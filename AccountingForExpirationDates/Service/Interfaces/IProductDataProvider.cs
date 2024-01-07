@@ -10,6 +10,6 @@ namespace AccountingForExpirationDates.Service.Interfaces
         Task EditSellByProduct(EditSellByModel editSellByModel);
         Task DeleteProduct(DeleteProductModel deleteProductModel);
         Task SetCategory(ProductCategoryModel categoryModelDto);
-        Task<ProductEntity[]> GetAllProduct();
+        Task<ProductModelDto[]> GetAllProduct();
     }
 }
