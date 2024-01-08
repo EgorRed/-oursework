@@ -23,7 +23,7 @@ namespace AccountingForExpirationDates.Service
             var code1 = await _db.Products.Where(x => x.BarcodeType1 == productModelDto.BarcodeType1).FirstOrDefaultAsync();
             var code2 = await _db.Products.Where(x => x.BarcodeType2 == productModelDto.BarcodeType2).FirstOrDefaultAsync();
 
-            if (code1 != null && code2 != null)
+            if (code1 == null && code2 == null)
             {
                 ProductEntity productEntity = new ProductEntity();
                 productEntity.BarcodeType1 = productModelDto.BarcodeType1;
@@ -67,18 +67,33 @@ namespace AccountingForExpirationDates.Service
 
         public async Task DeleteProduct(DeleteProductModel deleteProductModel)
         {
-            _db.Products.Remove(_db.Products.Where(x => x.Id == deleteProductModel.Id).First());
-            await _db.SaveChangesAsync();
+            var product = await _db.Products.Where(x => x.Id == deleteProductModel.Id).FirstOrDefaultAsync();
+            if (product != null)
+            {
+                _db.Products.Remove(product);
+                await _db.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"The product was not found. " +
+                    $"[ productID: {deleteProductModel.Id} ]");
+            }
         }
 
         public async Task EditSellByProduct(EditSellByModel editSellByModel)
         {
-             var Product = await _db.Products.Where(x => x.Id == editSellByModel.Id).FirstAsync();
+             var Product = await _db.Products.Where(x => x.Id == editSellByModel.Id).FirstOrDefaultAsync();
             if (Product != null) 
             {
                 Product.SellBy = editSellByModel.SellBy;
                 await _db.SaveChangesAsync();
             }
+            else
+            {
+                throw new Exception($"The product was not found. " +
+                    $"[ productID: {editSellByModel.Id} ]");
+            }
+
         }
 
 
@@ -101,18 +116,36 @@ namespace AccountingForExpirationDates.Service
 
         public async Task AddCategory(AddCategoryModel categoryModel)
         {
-            CategoryEntity categoryEntity = new CategoryEntity();
-            categoryEntity.Name = categoryModel.categoryName;
-            await _db.Category.AddAsync(categoryEntity);
-            await _db.SaveChangesAsync();
+            var category = await _db.Category.Where(x => x.Name.Equals(categoryModel.categoryName)).FirstOrDefaultAsync();
+            if (category != null)
+            {
+                CategoryEntity categoryEntity = new CategoryEntity();
+                categoryEntity.Name = categoryModel.categoryName;
+                await _db.Category.AddAsync(categoryEntity);
+                await _db.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"The category was not found. " +
+                    $"[ category name: {categoryModel.categoryName} ]");
+            }
         }
 
         public async Task RemoveCategory(RemoveCategoryModel categoryModel)
         {
-            var category = _db.Category.Where(x => x.Id == categoryModel.CategoryId).First();
-            category.Product.Clear();
-            _db.Category.Remove(category);
-            await _db.SaveChangesAsync();
+
+            var category = await _db.Category.Where(x => x.Id == categoryModel.CategoryId).FirstOrDefaultAsync();
+            if (category != null)
+            {
+                category.Product.Clear();
+                _db.Category.Remove(category);
+                await _db.SaveChangesAsync();
+            }
+            else 
+            {
+                throw new Exception($"The category was not found. " +
+                    $"[ categoryID: {categoryModel.CategoryId} ]");
+            }
         }
 
 

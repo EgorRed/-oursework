@@ -20,8 +20,16 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductModelDto productModelDto)
         {
-            await _providerService.AddProduct(productModelDto);
-            return Ok();
+            try
+            {
+                await _providerService.AddProduct(productModelDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPost]
@@ -33,15 +41,31 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveProduct(DeleteProductModel deleteProductModelDto)
         {
-            await _providerService.DeleteProduct(deleteProductModelDto);
-            return Ok();
+            try
+            {
+                await _providerService.DeleteProduct(deleteProductModelDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPost]
         public async Task<IActionResult> EditSellBy(EditSellByModel editSellByModelDto)
         {
-            await _providerService.EditSellByProduct(editSellByModelDto);
-            return Ok();
+            try
+            {
+                await _providerService.EditSellByProduct(editSellByModelDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPost]
@@ -54,8 +78,16 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
         {
-            await _providerService.RemoveCategory(category);
-            return Ok();
+            try
+            {
+                await _providerService.RemoveCategory(category);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPost]
