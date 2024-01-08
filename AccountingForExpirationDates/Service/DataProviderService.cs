@@ -20,13 +20,26 @@ namespace AccountingForExpirationDates.Service
 
         public async Task AddProduct(ProductModelDto productModelDto)
         {
-            ProductEntity productEntity = new ProductEntity();
-            productEntity.BarcodeType1 = productModelDto.BarcodeType1;
-            productEntity.BarcodeType2 = productModelDto.BarcodeType2;
-            productEntity.Name = productModelDto.Name;
-            productEntity.SellBy = productModelDto.SellBy;
-            await _db.Products.AddAsync(productEntity);
-            await _db.SaveChangesAsync();
+            var code1 = await _db.Products.Where(x => x.BarcodeType1 == productModelDto.BarcodeType1).FirstOrDefaultAsync();
+            var code2 = await _db.Products.Where(x => x.BarcodeType2 == productModelDto.BarcodeType2).FirstOrDefaultAsync();
+
+            if (code1 != null && code2 != null)
+            {
+                ProductEntity productEntity = new ProductEntity();
+                productEntity.BarcodeType1 = productModelDto.BarcodeType1;
+                productEntity.BarcodeType2 = productModelDto.BarcodeType2;
+                productEntity.Name = productModelDto.Name;
+                productEntity.SellBy = productModelDto.SellBy;
+                await _db.Products.AddAsync(productEntity);
+                await _db.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"such a product already exists. " +
+                    $"[ {productModelDto.BarcodeType1} " +
+                    $"{productModelDto.BarcodeType2} " +
+                    $"{productModelDto.Name} ]");
+            }
         }
 
 
