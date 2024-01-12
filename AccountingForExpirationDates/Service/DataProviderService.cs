@@ -117,7 +117,7 @@ namespace AccountingForExpirationDates.Service
         public async Task AddCategory(AddCategoryModel categoryModel)
         {
             var category = await _db.Category.Where(x => x.Name.Equals(categoryModel.categoryName)).FirstOrDefaultAsync();
-            if (category != null)
+            if (category == null)
             {
                 CategoryEntity categoryEntity = new CategoryEntity();
                 categoryEntity.Name = categoryModel.categoryName;
@@ -126,7 +126,7 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                throw new Exception($"The category was not found. " +
+                throw new Exception($"this category already exists. " +
                     $"[ category name: {categoryModel.categoryName} ]");
             }
         }
@@ -134,7 +134,8 @@ namespace AccountingForExpirationDates.Service
         public async Task RemoveCategory(RemoveCategoryModel categoryModel)
         {
 
-            var category = await _db.Category.Where(x => x.Id == categoryModel.CategoryId).FirstOrDefaultAsync();
+            var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.CategoryId);
+            
             if (category != null)
             {
                 category.Product.Clear();
@@ -151,12 +152,13 @@ namespace AccountingForExpirationDates.Service
 
         public async Task SetCategory(ProductCategoryModel categoryModelDto)
         {
-            //var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstAsync();
-            //var category = await _db.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstAsync();
+            var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstAsync();
+            var category = await _db.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstAsync();
 
-            //category.Product.Add(product);
-            //await _db.SaveChangesAsync();
-            throw new NotImplementedException();
+            product.Category = category;
+            category.Product.Add(product);
+            
+            await _db.SaveChangesAsync();
         }
     }
 }
