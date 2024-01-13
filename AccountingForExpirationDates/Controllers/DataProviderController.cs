@@ -17,6 +17,7 @@ namespace AccountingForExpirationDates.Controllers
             _providerService = providerService;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductModelDto productModelDto)
         {
@@ -32,11 +33,13 @@ namespace AccountingForExpirationDates.Controllers
 
         }
 
+
         [HttpPost]
         public async Task<ProductModelDto[]> GetAllProduct()
         {
             return await _providerService.GetAllProduct();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RemoveProduct(DeleteProductModel deleteProductModelDto)
@@ -53,6 +56,7 @@ namespace AccountingForExpirationDates.Controllers
 
         }
 
+
         [HttpPost]
         public async Task<IActionResult> EditSellBy(EditSellByModel editSellByModelDto)
         {
@@ -68,12 +72,14 @@ namespace AccountingForExpirationDates.Controllers
 
         }
 
+
         [HttpPost]
         public async Task<IActionResult> AddCategory(AddCategoryModel category)
         {
             await _providerService.AddCategory(category);
             return Ok();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
@@ -90,19 +96,34 @@ namespace AccountingForExpirationDates.Controllers
 
         }
 
+
         [HttpPost]
         public async Task<CategoryDto[]> GetAllCategory()
         {
             return await _providerService.GetAllCategory();
         }
 
+
         [HttpPost]
         public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
         {
+            try
+            {
+                await _providerService.SetCategory(productCategoryModel);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-            await _providerService.SetCategory(productCategoryModel);
+        }
 
-            return Ok();
+        [HttpPost]
+        public async Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        {
+
+            return await _providerService.GetAllProductFromCategory(categoryModel);
         }
     }
 }

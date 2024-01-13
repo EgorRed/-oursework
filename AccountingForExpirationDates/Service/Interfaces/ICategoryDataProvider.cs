@@ -9,6 +9,6 @@ namespace AccountingForExpirationDates.Service.Interfaces
         Task AddCategory(AddCategoryModel categoryModel);
         Task RemoveCategory(RemoveCategoryModel categoryModel);
         Task<CategoryDto[]> GetAllCategory();
-        Task<ProductModelDto[]> GetAllProductFromCategory(CategoryDto category);
+        Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel);
     }
 }

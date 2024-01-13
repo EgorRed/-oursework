@@ -46,18 +46,16 @@ namespace AccountingForExpirationDates.Service
         public async Task<ProductModelDto[]> GetAllProduct()
         {
             AllProductModel allProduct = new AllProductModel();
-            foreach (var product in await _db.Products.ToArrayAsync()) 
+            foreach (var product in await _db.Products.Include(x => x.Category).ToArrayAsync()) 
             {
                 ProductModelDto productModelDto = new ProductModelDto();
+                productModelDto.Id = product.Id;
                 productModelDto.BarcodeType1 = product.BarcodeType1;
                 productModelDto.BarcodeType2 = product.BarcodeType2;
                 productModelDto.Name = product.Name;
                 productModelDto.SellBy = product.SellBy;
                 productModelDto.categoryId = product.CategoryId;
-                if (product.Category != null)
-                {
-                    productModelDto.categoryName = product.Category.Name;
-                }
+                productModelDto.categoryName = product.Category?.Name;
                 allProduct.Products.Add(productModelDto);
             }
 
@@ -131,6 +129,7 @@ namespace AccountingForExpirationDates.Service
             }
         }
 
+
         public async Task RemoveCategory(RemoveCategoryModel categoryModel)
         {
 
@@ -159,6 +158,47 @@ namespace AccountingForExpirationDates.Service
             category.Product.Add(product);
             
             await _db.SaveChangesAsync();
+        }
+
+
+        public async Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        {
+            List<ProductModelDto> products = new List<ProductModelDto>();
+
+            var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.Id);
+            if (category != null)
+            {
+                if (category.Product != null && category.Product.Count != 0)
+                {
+                    foreach (var item in category.Product)
+                    {
+                        ProductModelDto productModel = new ProductModelDto();
+                        productModel.Id = item.Id;
+                        productModel.BarcodeType1 = item.BarcodeType1;
+                        productModel.BarcodeType2 = item.BarcodeType2;
+                        productModel.Name = item.Name;
+                        if (item.Category != null)
+                        {
+                            productModel.categoryName = item.Category.Name;
+                        }
+                        productModel.categoryId = item.CategoryId;
+                        products.Add(productModel);
+                    }
+
+                    return products.ToArray();
+
+                }
+                else
+                {
+                    throw new Exception($"the category is empty. " +
+                                        $"[ categoryID: {categoryModel.Id} ]");
+                }
+            }
+            else
+            {
+                throw new Exception($"The category was not found. " +
+                                    $"[ categoryID: {categoryModel.Id} ]");
+            }
         }
     }
 }
