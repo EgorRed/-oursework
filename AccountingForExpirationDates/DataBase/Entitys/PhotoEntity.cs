@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AccountingForExpirationDates.Data.Entitys
+namespace AccountingForExpirationDates.DataBase.Entitys
 {
     public class PhotoEntity
     {

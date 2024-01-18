@@ -1,4 +1,4 @@
-﻿using AccountingForExpirationDates.Data.Entitys;
+﻿using AccountingForExpirationDates.DataBase.Entitys;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 

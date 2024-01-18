@@ -1,8 +1,8 @@
-﻿using AccountingForExpirationDates.Data.Entitys;
+﻿using AccountingForExpirationDates.DataBase;
+using AccountingForExpirationDates.DataBase.Entitys;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Service.Interfaces;
-using AccountingForExpirationDates.UserData;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccountingForExpirationDates.Service

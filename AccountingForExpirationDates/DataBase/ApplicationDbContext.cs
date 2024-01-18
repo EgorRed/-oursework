@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
-using AccountingForExpirationDates.Data.Entitys;
+using AccountingForExpirationDates.DataBase.Entitys;
 
-namespace AccountingForExpirationDates.UserData
+namespace AccountingForExpirationDates.DataBase
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
@@ -30,19 +30,6 @@ namespace AccountingForExpirationDates.UserData
                 .HasMany(x => x.Photos)
                 .WithOne(t => t.Product)
                 .HasForeignKey(p => p.ProductId);
-
-            //builder.Entity<ProductModel>()
-            //    .HasKey(x => x.Id);
-
-            //builder.Entity<ProductModel>()
-            //    .Property(x => x.SellBy).IsRequired().HasColumnType("datetime2");
-
-
-            //builder.Entity<PhotoModel>()
-            //    .HasKey(x => x.Id);
-
-            //builder.Entity<CategoryModel>()
-            //    .HasKey(x => x.Id);
 
             base.OnModelCreating(builder);
         }

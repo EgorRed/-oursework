@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
-namespace AccountingForExpirationDates.Data.Entitys
+namespace AccountingForExpirationDates.DataBase.Entitys
 {
     public class ProductEntity
     {
