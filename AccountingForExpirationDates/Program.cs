@@ -1,11 +1,9 @@
-using AccountingForExpirationDates.Data;
 using AccountingForExpirationDates.Service;
 using AccountingForExpirationDates.Service.Interfaces;
 using AccountingForExpirationDates.UserData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -52,7 +50,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<IDataProviderService, DataProviderService>();
+builder.Services.AddScoped<IProductDataProviderService, ProductDataProviderService>();
+builder.Services.AddScoped<ICategoryDataProviderService, CategoryDataProviderService>();
 
 builder.Services.AddAuthentication(options =>
 {

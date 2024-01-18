@@ -8,11 +8,11 @@ namespace AccountingForExpirationDates.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class DataProviderController : ControllerBase
+    public class ProductDataProviderController : ControllerBase
     {
-        private IDataProviderService _providerService;
+        private IProductDataProviderService _providerService;
 
-        public DataProviderController(IDataProviderService providerService) 
+        public ProductDataProviderController(IProductDataProviderService providerService) 
         {
             _providerService = providerService;
         }
@@ -73,57 +73,57 @@ namespace AccountingForExpirationDates.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> AddCategory(AddCategoryModel category)
-        {
-            await _providerService.AddCategory(category);
-            return Ok();
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> AddCategory(AddCategoryModel category)
+        //{
+        //    await _providerService.AddCategory(category);
+        //    return Ok();
+        //}
 
 
-        [HttpPost]
-        public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
-        {
-            try
-            {
-                await _providerService.RemoveCategory(category);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
+        //{
+        //    try
+        //    {
+        //        await _providerService.RemoveCategory(category);
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
 
-        }
-
-
-        [HttpPost]
-        public async Task<CategoryDto[]> GetAllCategory()
-        {
-            return await _providerService.GetAllCategory();
-        }
+        //}
 
 
-        [HttpPost]
-        public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
-        {
-            try
-            {
-                await _providerService.SetCategory(productCategoryModel);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        //[HttpPost]
+        //public async Task<CategoryDto[]> GetAllCategory()
+        //{
+        //    return await _providerService.GetAllCategory();
+        //}
 
-        }
 
-        [HttpPost]
-        public async Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
+        //{
+        //    try
+        //    {
+        //        await _providerService.SetCategory(productCategoryModel);
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
 
-            return await _providerService.GetAllProductFromCategory(categoryModel);
-        }
+        //}
+
+        //[HttpPost]
+        //public async Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        //{
+
+        //    return await _providerService.GetAllProductFromCategory(categoryModel);
+        //}
     }
 }

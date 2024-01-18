@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccountingForExpirationDates.Service
 {
-    public class DataProviderService : IDataProviderService
+    public class ProductDataProviderService : IProductDataProviderService
     {
 
         public ApplicationDbContext _db;
 
-        public DataProviderService(ApplicationDbContext db) 
+        public ProductDataProviderService(ApplicationDbContext db) 
         {
             _db = db;
         }
