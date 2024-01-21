@@ -6,6 +6,7 @@ namespace AccountingForExpirationDates.DataBase.Entitys
 {
     public class ProductEntity
     {
+
         public int Id { get; set; }
         public string? BarcodeType1 { get; set; }
         public string? BarcodeType2 { get; set; }
@@ -17,5 +18,10 @@ namespace AccountingForExpirationDates.DataBase.Entitys
         public CategoryEntity? Category { get; set; }
 
         public List<PhotoEntity> Photos { get; set; } = new List<PhotoEntity>();
+
+        public int? WarehouseId { get; set; }
+        public WarehouseEntity? Warehouse { get; set; }
+        //public int WarehouseId { get; set; }
+
     }
 }

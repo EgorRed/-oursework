@@ -13,6 +13,7 @@ namespace AccountingForExpirationDates.DataBase
         public DbSet<ProductEntity> Products { get; set; }
         public DbSet<CategoryEntity> Category { get; set; }
         public DbSet<PhotoEntity> Photo { get; set; }
+        public DbSet<WarehouseEntity> Warehouses { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -30,6 +31,11 @@ namespace AccountingForExpirationDates.DataBase
                 .HasMany(x => x.Photos)
                 .WithOne(t => t.Product)
                 .HasForeignKey(p => p.ProductId);
+
+            builder.Entity<ProductEntity>()
+                .HasOne(x => x.Warehouse)
+                .WithMany(t => t.Product)
+                .HasForeignKey(p => p.WarehouseId);
 
             base.OnModelCreating(builder);
         }
