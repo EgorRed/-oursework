@@ -1,12 +1,13 @@
-﻿using AccountingForExpirationDates.Model.Warehouse;
+﻿using AccountingForExpirationDates.HelperClasses;
+using AccountingForExpirationDates.Model.Warehouse;
 
 namespace AccountingForExpirationDates.Service.Interfaces
 {
     public interface IWarehouseProviderService
     {
-        Task CreateWarehouse(CreateWarehouseModel WarehouseModel);
-        Task RemoveWarehouse(RemoveWarehouseModel WarehouseModel);
-        Task UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel);
-        Task<WarehouseDto[]> GetAllWarehouses();
+        Task<Status> CreateWarehouse(CreateWarehouseModel WarehouseModel);
+        Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel);
+        Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel);
+        Task<Pair<Status,WarehouseDto[]>> GetAllWarehouses();
     }
 }
