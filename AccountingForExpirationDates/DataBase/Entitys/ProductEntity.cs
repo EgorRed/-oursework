@@ -21,7 +21,6 @@ namespace AccountingForExpirationDates.DataBase.Entitys
 
         public int? WarehouseId { get; set; }
         public WarehouseEntity? Warehouse { get; set; }
-        //public int WarehouseId { get; set; }
 
     }
 }
