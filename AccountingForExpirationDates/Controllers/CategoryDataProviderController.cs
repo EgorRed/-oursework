@@ -1,4 +1,5 @@
-﻿using AccountingForExpirationDates.Model.Category;
+﻿using AccountingForExpirationDates.HelperClasses;
+using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,57 +17,87 @@ namespace AccountingForExpirationDates.Controllers
             _providerService = providerService;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> AddCategory(AddCategoryModel category)
         {
-            await _providerService.AddCategory(category);
-            return Ok();
+
+            var action = await _providerService.AddCategory(category);
+
+            if (action.StatusCode == 1) 
+            {
+                return Ok(action.Description);
+            }
+            else
+            {
+                return BadRequest(action.Description);
+            }
+            
         }
 
 
         [HttpPost]
         public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
         {
-            try
+            var action = await _providerService.RemoveCategory(category);
+
+            if (action.StatusCode == 1)
             {
-                await _providerService.RemoveCategory(category);
-                return Ok();
+                return Ok(action.Description);
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest(ex.Message);
+                return BadRequest(action.Description);
             }
 
         }
 
 
         [HttpPost]
-        public async Task<CategoryDto[]> GetAllCategory()
+        public async Task<ActionResult<CategoryDto[]>> GetAllCategory()
         {
-            return await _providerService.GetAllCategory();
+            var action = await _providerService.GetAllCategory();
+
+            if (action.first.StatusCode == 1)
+            {
+                return Ok(action.first.Description);
+            }
+            else
+            {
+                return BadRequest(action.first.Description);
+            }
         }
 
 
         [HttpPost]
         public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
         {
-            try
+            var action = await _providerService.SetCategory(productCategoryModel);
+
+            if (action.StatusCode == 1)
             {
-                await _providerService.SetCategory(productCategoryModel);
-                return Ok();
+                return Ok(action.Description);
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest(ex.Message);
+                return BadRequest(action.Description);
             }
 
         }
 
         [HttpPost]
-        public async Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        public async Task<ActionResult<ProductModelDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
         {
+            var action = await _providerService.GetAllProductFromCategory(categoryModel);
 
-            return await _providerService.GetAllProductFromCategory(categoryModel);
+            if (action.first.StatusCode == 1)
+            {
+                return Ok(action.first.Description);
+            }
+            else
+            {
+                return BadRequest(action.first.Description);
+            }
         }
     }
 }
