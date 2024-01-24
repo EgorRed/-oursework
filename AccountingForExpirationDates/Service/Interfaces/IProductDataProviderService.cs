@@ -1,4 +1,5 @@
 ﻿using AccountingForExpirationDates.DataBase.Entitys;
+using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Product;
 using System.Net.Http.Headers;
 
@@ -6,10 +7,10 @@ namespace AccountingForExpirationDates.Service.Interfaces
 {
     public interface IProductDataProviderService
     {
-        Task AddProduct(ProductModelDto productModelDto);
-        Task EditSellByProduct(EditSellByModel editSellByModel);
-        Task DeleteProduct(DeleteProductModel deleteProductModel);
+        Task<Status> AddProduct(ProductModelDto productModelDto);
+        Task<Status> EditSellByProduct(EditSellByModel editSellByModel);
+        Task<Status> DeleteProduct(DeleteProductModel deleteProductModel);
         
-        Task<ProductModelDto[]> GetAllProduct();
+        Task<Pair<Status, ProductModelDto[]>> GetAllProduct();
     }
 }

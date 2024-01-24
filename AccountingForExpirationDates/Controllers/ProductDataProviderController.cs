@@ -21,109 +21,65 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductModelDto productModelDto)
         {
-            try
+            var action = await _providerService.AddProduct(productModelDto);
+            if (action.StatusCode == 1) 
             {
                 await _providerService.AddProduct(productModelDto);
-                return Ok();
+                return Ok(action.Description);
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest(ex.Message);
+                return BadRequest(action.Description);
             }
 
         }
 
 
         [HttpPost]
-        public async Task<ProductModelDto[]> GetAllProduct()
+        public async Task<ActionResult<ProductModelDto[]>> GetAllProduct()
         {
-            return await _providerService.GetAllProduct();
+            var action = await _providerService.GetAllProduct(); 
+            if (action.first.StatusCode == 1) 
+            {
+                return action.second;
+            }
+            else
+            {
+                return BadRequest(action.first.Description);
+            }            
         }
 
 
         [HttpPost]
         public async Task<IActionResult> RemoveProduct(DeleteProductModel deleteProductModelDto)
         {
-            try
-            {
-                await _providerService.DeleteProduct(deleteProductModelDto);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var action = await _providerService.DeleteProduct(deleteProductModelDto);
 
+            if (action.StatusCode == 1)
+            {
+                return Ok(action.Description);
+            }
+            else
+            {
+                return BadRequest(action.Description);
+            }
         }
 
 
         [HttpPost]
         public async Task<IActionResult> EditSellBy(EditSellByModel editSellByModelDto)
         {
-            try
+            var action = await _providerService.EditSellByProduct(editSellByModelDto);
+
+            if (action.StatusCode == 1)
             {
-                await _providerService.EditSellByProduct(editSellByModelDto);
-                return Ok();
+                return Ok(action.Description);
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest(ex.Message);
+                return BadRequest(action.Description);
             }
 
         }
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddCategory(AddCategoryModel category)
-        //{
-        //    await _providerService.AddCategory(category);
-        //    return Ok();
-        //}
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
-        //{
-        //    try
-        //    {
-        //        await _providerService.RemoveCategory(category);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //}
-
-
-        //[HttpPost]
-        //public async Task<CategoryDto[]> GetAllCategory()
-        //{
-        //    return await _providerService.GetAllCategory();
-        //}
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
-        //{
-        //    try
-        //    {
-        //        await _providerService.SetCategory(productCategoryModel);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //}
-
-        //[HttpPost]
-        //public async Task<ProductModelDto[]> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
-        //{
-
-        //    return await _providerService.GetAllProductFromCategory(categoryModel);
-        //}
     }
 }

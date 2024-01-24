@@ -1,5 +1,6 @@
 ﻿using AccountingForExpirationDates.DataBase;
 using AccountingForExpirationDates.DataBase.Entitys;
+using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Service.Interfaces;
@@ -18,7 +19,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task AddProduct(ProductModelDto productModelDto)
+        public async Task<Status> AddProduct(ProductModelDto productModelDto)
         {
             var code1 = await _db.Products.Where(x => x.BarcodeType1 == productModelDto.BarcodeType1).FirstOrDefaultAsync();
             var code2 = await _db.Products.Where(x => x.BarcodeType2 == productModelDto.BarcodeType2).FirstOrDefaultAsync();
@@ -35,15 +36,17 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                throw new Exception($"such a product already exists. " +
+                return new Status(0, $"such a product already exists. " +
                     $"[ {productModelDto.BarcodeType1} " +
                     $"{productModelDto.BarcodeType2} " +
                     $"{productModelDto.Name} ]");
+
             }
+            return new Status(1, "success");
         }
 
 
-        public async Task<ProductModelDto[]> GetAllProduct()
+        public async Task<Pair<Status, ProductModelDto[]>> GetAllProduct()
         {
             AllProductModel allProduct = new AllProductModel();
             foreach (var product in await _db.Products.Include(x => x.Category).ToArrayAsync()) 
@@ -59,11 +62,11 @@ namespace AccountingForExpirationDates.Service
                 allProduct.Products.Add(productModelDto);
             }
 
-            return allProduct.Products.ToArray();
+            return new Pair<Status, ProductModelDto[]>(new Status(1, "success"), allProduct.Products.ToArray());
         }
 
 
-        public async Task DeleteProduct(DeleteProductModel deleteProductModel)
+        public async Task<Status> DeleteProduct(DeleteProductModel deleteProductModel)
         {
             var product = await _db.Products.Where(x => x.Id == deleteProductModel.Id).FirstOrDefaultAsync();
             if (product != null)
@@ -73,12 +76,13 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                throw new Exception($"The product was not found. " +
+                return new Status(0, "$The product was not found. " +
                     $"[ productID: {deleteProductModel.Id} ]");
             }
+            return new Status(1, "success");
         }
 
-        public async Task EditSellByProduct(EditSellByModel editSellByModel)
+        public async Task<Status> EditSellByProduct(EditSellByModel editSellByModel)
         {
              var Product = await _db.Products.Where(x => x.Id == editSellByModel.Id).FirstOrDefaultAsync();
             if (Product != null) 
@@ -88,9 +92,10 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                throw new Exception($"The product was not found. " +
+                return new Status(0, "$The product was not found. " +
                     $"[ productID: {editSellByModel.Id} ]");
             }
+            return new Status(1, "success");
 
         }
 
