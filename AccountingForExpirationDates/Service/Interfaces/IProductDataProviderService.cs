@@ -11,6 +11,6 @@ namespace AccountingForExpirationDates.Service.Interfaces
         Task<Status> EditSellByProduct(EditSellByModel editSellByModel);
         Task<Status> DeleteProduct(DeleteProductModel deleteProductModel);
         
-        Task<Pair<Status, ProductModelDto[]>> GetAllProduct();
+        Task<Outcome<Status, ProductModelDto[]>> GetAllProduct();
     }
 }

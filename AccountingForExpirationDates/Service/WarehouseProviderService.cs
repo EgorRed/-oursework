@@ -25,7 +25,7 @@ namespace AccountingForExpirationDates.Service
             return new Status(1, "success");
         }
 
-        public async Task<Pair<Status, WarehouseDto[]>> GetAllWarehouses()
+        public async Task<Outcome<Status, WarehouseDto[]>> GetAllWarehouses()
         {
             var warehouses = await _db.Warehouses.ToArrayAsync();
             var warehouseDtoList = new List<WarehouseDto>();
@@ -37,7 +37,7 @@ namespace AccountingForExpirationDates.Service
                 warehouseDtoList.Add(warehouseDto);
             }
 
-            return new Pair<Status, WarehouseDto[]>(new Status(1, "success"), warehouseDtoList.ToArray());
+            return new Outcome<Status, WarehouseDto[]>(new Status(1, "success"), warehouseDtoList.ToArray());
         }
 
         public async Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel)

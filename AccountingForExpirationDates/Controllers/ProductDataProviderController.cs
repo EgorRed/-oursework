@@ -39,13 +39,13 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<ActionResult<ProductModelDto[]>> GetAllProduct()
         {
             var action = await _providerService.GetAllProduct(); 
-            if (action.first.StatusCode == 1) 
+            if (action.status.StatusCode == 1) 
             {
-                return action.second;
+                return action.data;
             }
             else
             {
-                return BadRequest(action.first.Description);
+                return BadRequest(action.status.Description);
             }            
         }
 

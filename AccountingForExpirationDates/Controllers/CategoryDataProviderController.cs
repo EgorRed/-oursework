@@ -58,13 +58,13 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.GetAllCategory();
 
-            if (action.first.StatusCode == 1)
+            if (action.status.StatusCode == 1)
             {
-                return Ok(action.first.Description);
+                return Ok(action.status.Description);
             }
             else
             {
-                return BadRequest(action.first.Description);
+                return BadRequest(action.status.Description);
             }
         }
 
@@ -90,13 +90,13 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.GetAllProductFromCategory(categoryModel);
 
-            if (action.first.StatusCode == 1)
+            if (action.status.StatusCode == 1)
             {
-                return Ok(action.first.Description);
+                return Ok(action.status.Description);
             }
             else
             {
-                return BadRequest(action.first.Description);
+                return BadRequest(action.status.Description);
             }
         }
     }

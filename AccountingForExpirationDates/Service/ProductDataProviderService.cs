@@ -46,7 +46,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Pair<Status, ProductModelDto[]>> GetAllProduct()
+        public async Task<Outcome<Status, ProductModelDto[]>> GetAllProduct()
         {
             AllProductModel allProduct = new AllProductModel();
             foreach (var product in await _db.Products.Include(x => x.Category).ToArrayAsync()) 
@@ -62,7 +62,7 @@ namespace AccountingForExpirationDates.Service
                 allProduct.Products.Add(productModelDto);
             }
 
-            return new Pair<Status, ProductModelDto[]>(new Status(1, "success"), allProduct.Products.ToArray());
+            return new Outcome<Status, ProductModelDto[]>(new Status(1, "success"), allProduct.Products.ToArray());
         }
 
 

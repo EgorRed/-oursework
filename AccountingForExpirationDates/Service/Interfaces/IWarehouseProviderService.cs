@@ -8,6 +8,6 @@ namespace AccountingForExpirationDates.Service.Interfaces
         Task<Status> CreateWarehouse(CreateWarehouseModel WarehouseModel);
         Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel);
         Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel);
-        Task<Pair<Status,WarehouseDto[]>> GetAllWarehouses();
+        Task<Outcome<Status,WarehouseDto[]>> GetAllWarehouses();
     }
 }
