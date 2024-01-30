@@ -18,7 +18,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Pair<Status, CategoryDto[]>> GetAllCategory()
+        public async Task<Outcome<Status, CategoryDto[]>> GetAllCategory()
         {
             AllCategoryModel AllCategory = new AllCategoryModel();
 
@@ -31,7 +31,7 @@ namespace AccountingForExpirationDates.Service
                 AllCategory.Categories.Add(categoryDto);
             }
 
-            return new Pair<Status, CategoryDto[]>(new Status(1, "success"), AllCategory.Categories.ToArray());
+            return new Outcome<Status, CategoryDto[]>(new Status(1, "success"), AllCategory.Categories.ToArray());
         }
 
 
@@ -97,7 +97,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Pair<Status, ProductModelDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        public async Task<Outcome<Status, ProductModelDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
         {
             List<ProductModelDto> products = new List<ProductModelDto>();
 
@@ -121,19 +121,19 @@ namespace AccountingForExpirationDates.Service
                         products.Add(productModel);
                     }
 
-                    return new Pair<Status, ProductModelDto[]>(new Status(1, "success"), products.ToArray());
+                    return new Outcome<Status, ProductModelDto[]>(new Status(1, "success"), products.ToArray());
 
                 }
                 else
                 {
-                    return new Pair<Status, ProductModelDto[]>(new Status(0, $"the category is empty. " +
+                    return new Outcome<Status, ProductModelDto[]>(new Status(0, $"the category is empty. " +
                                        $"[ categoryID: {categoryModel.Id} ]"), 
                                        products.ToArray());
                 }
             }
             else
             {
-                return new Pair<Status, ProductModelDto[]>(new Status(0, $"The category was not found. " +
+                return new Outcome<Status, ProductModelDto[]>(new Status(0, $"The category was not found. " +
                                     $"[ categoryID: {categoryModel.Id} ]"),
                                     products.ToArray());
             }

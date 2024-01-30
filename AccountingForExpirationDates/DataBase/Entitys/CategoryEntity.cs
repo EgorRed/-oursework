@@ -8,5 +8,8 @@ namespace AccountingForExpirationDates.DataBase.Entitys
         public string? Name { get; set; }
 
         public List<ProductEntity> Product { get; set; } = new List<ProductEntity>();
+
+        public int? WarehouseId { get; set; }
+        public WarehouseEntity? Warehouse { get; set; }
     }
 }
