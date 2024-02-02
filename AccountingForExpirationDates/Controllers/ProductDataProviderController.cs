@@ -25,7 +25,6 @@ namespace AccountingForExpirationDates.Controllers
             var action = await _providerService.AddProduct(productModelDto);
             if (action.StatusCode == RequestStatus.OK) 
             {
-                await _providerService.AddProduct(productModelDto);
                 return Ok(action.Description);
             }
             else

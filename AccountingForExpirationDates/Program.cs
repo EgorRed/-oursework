@@ -52,6 +52,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 builder.Services.AddScoped<IProductDataProviderService, ProductDataProviderService>();
 builder.Services.AddScoped<ICategoryDataProviderService, CategoryDataProviderService>();
+builder.Services.AddScoped<IWarehouseProviderService, WarehouseProviderService>();
 
 builder.Services.AddAuthentication(options =>
 {

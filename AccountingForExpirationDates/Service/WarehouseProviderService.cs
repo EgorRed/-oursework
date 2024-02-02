@@ -21,7 +21,7 @@ namespace AccountingForExpirationDates.Service
             WarehouseEntity warehouse = new WarehouseEntity();
             if (WarehouseModel != null) 
             {
-                warehouse.Name = warehouse.Name;
+                warehouse.Name = WarehouseModel.Name;
                 warehouse.Description = WarehouseModel.Description;
                 await _db.Warehouses.AddAsync(warehouse);
                 await _db.SaveChangesAsync();
@@ -39,6 +39,7 @@ namespace AccountingForExpirationDates.Service
             {
                 WarehouseDto warehouseDto = new WarehouseDto();
                 warehouseDto.Id = item.Id;
+                warehouseDto.Name = item.Name;
                 warehouseDto.Description = item.Description;
                 warehouseDtoList.Add(warehouseDto);
             }
@@ -51,21 +52,36 @@ namespace AccountingForExpirationDates.Service
             var warehouse = await _db.Warehouses.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == WarehouseModel.Id);
             if (warehouse != null)
             {
+                
                 warehouse.Product.Clear();
                 _db.Warehouses.Remove(warehouse);
                 await _db.SaveChangesAsync();
+                return new Status(RequestStatus.OK, "success");
             }
             else
             {
                 return new Status(RequestStatus.DataIsNotFound, $"There is no such warehouse." +
                     $"[WarehouseID: {WarehouseModel.Id}]");
             }
-            return new Status(RequestStatus.OK, "success");
+            
         }
 
-        public Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel)
+        public async Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel)
         {
-            throw new NotImplementedException();
+            var warehouse = await _db.Warehouses.Where(x => x.Id == WarehouseModel.Id).FirstOrDefaultAsync();
+            if (warehouse != null) 
+            {
+
+                warehouse.Description = WarehouseModel.Description;
+                await _db.SaveChangesAsync();
+
+                return new Status(RequestStatus.OK, "success");
+            }
+            else
+            {
+                return new Status(RequestStatus.DataIsNotFound, $"There is no such warehouse." +
+                    $"[WarehouseID: {WarehouseModel.Id}]");
+            }
         }
     }
 }
