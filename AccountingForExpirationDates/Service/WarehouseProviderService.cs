@@ -19,10 +19,16 @@ namespace AccountingForExpirationDates.Service
         public async Task<Status> CreateWarehouse(CreateWarehouseModel WarehouseModel)
         {
             WarehouseEntity warehouse = new WarehouseEntity();
-            warehouse.Description = WarehouseModel.Description;
-            await _db.Warehouses.AddAsync(warehouse);
-            await _db.SaveChangesAsync();
-            return new Status(1, "success");
+            if (WarehouseModel != null) 
+            {
+                warehouse.Name = warehouse.Name;
+                warehouse.Description = WarehouseModel.Description;
+                await _db.Warehouses.AddAsync(warehouse);
+                await _db.SaveChangesAsync();
+                return new Status(RequestStatus.OK, "success");
+            }
+            return new Status(RequestStatus.DataIsNull, "in WarehouseModel empty value");
+
         }
 
         public async Task<Outcome<Status, WarehouseDto[]>> GetAllWarehouses()
@@ -37,7 +43,7 @@ namespace AccountingForExpirationDates.Service
                 warehouseDtoList.Add(warehouseDto);
             }
 
-            return new Outcome<Status, WarehouseDto[]>(new Status(1, "success"), warehouseDtoList.ToArray());
+            return new Outcome<Status, WarehouseDto[]>(new Status(RequestStatus.OK, "success"), warehouseDtoList.ToArray());
         }
 
         public async Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel)
@@ -51,10 +57,10 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(0, $"There is no such warehouse." +
+                return new Status(RequestStatus.DataIsNotFound, $"There is no such warehouse." +
                     $"[WarehouseID: {WarehouseModel.Id}]");
             }
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
         }
 
         public Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel)

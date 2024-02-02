@@ -24,7 +24,7 @@ namespace AccountingForExpirationDates.Controllers
 
             var action = await _providerService.AddCategory(category);
 
-            if (action.StatusCode == 1) 
+            if (action.StatusCode == RequestStatus.OK) 
             {
                 return Ok(action.Description);
             }
@@ -41,7 +41,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.RemoveCategory(category);
 
-            if (action.StatusCode == 1)
+            if (action.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.Description);
             }
@@ -58,7 +58,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.GetAllCategory();
 
-            if (action.status.StatusCode == 1)
+            if (action.status.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.status.Description);
             }
@@ -74,7 +74,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.SetCategory(productCategoryModel);
 
-            if (action.StatusCode == 1)
+            if (action.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.Description);
             }
@@ -90,7 +90,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.GetAllProductFromCategory(categoryModel);
 
-            if (action.status.StatusCode == 1)
+            if (action.status.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.status.Description);
             }

@@ -1,4 +1,5 @@
 ﻿using AccountingForExpirationDates.DataBase.Entitys;
+using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Service.Interfaces;
@@ -22,7 +23,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> AddProduct(ProductModelDto productModelDto)
         {
             var action = await _providerService.AddProduct(productModelDto);
-            if (action.StatusCode == 1) 
+            if (action.StatusCode == RequestStatus.OK) 
             {
                 await _providerService.AddProduct(productModelDto);
                 return Ok(action.Description);
@@ -39,7 +40,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<ActionResult<ProductModelDto[]>> GetAllProduct()
         {
             var action = await _providerService.GetAllProduct(); 
-            if (action.status.StatusCode == 1) 
+            if (action.status.StatusCode == RequestStatus.OK) 
             {
                 return action.data;
             }
@@ -55,7 +56,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.DeleteProduct(deleteProductModelDto);
 
-            if (action.StatusCode == 1)
+            if (action.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.Description);
             }
@@ -71,7 +72,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var action = await _providerService.EditSellByProduct(editSellByModelDto);
 
-            if (action.StatusCode == 1)
+            if (action.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.Description);
             }

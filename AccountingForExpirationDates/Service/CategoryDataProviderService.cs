@@ -31,7 +31,7 @@ namespace AccountingForExpirationDates.Service
                 AllCategory.Categories.Add(categoryDto);
             }
 
-            return new Outcome<Status, CategoryDto[]>(new Status(1, "success"), AllCategory.Categories.ToArray());
+            return new Outcome<Status, CategoryDto[]>(new Status(RequestStatus.OK, "success"), AllCategory.Categories.ToArray());
         }
 
 
@@ -47,10 +47,10 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(0, $"this category already exists. " +
+                return new Status(RequestStatus.DataRepetition, $"this category already exists. " +
                     $"[ category name: {categoryModel.categoryName} ]");
             }
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
         }
 
 
@@ -67,10 +67,10 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(0, $"The category was not found. " +
+                return new Status(RequestStatus.DataIsNotFound, $"The category was not found. " +
                     $"[ categoryID: {categoryModel.CategoryId} ]");
             }
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
         }
 
 
@@ -79,13 +79,13 @@ namespace AccountingForExpirationDates.Service
             var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstOrDefaultAsync();
             if (product == null)
             {
-                return new Status(0, $"The product was not found" +
+                return new Status(RequestStatus.DataIsNotFound, $"The product was not found" +
                     $"[ productID: {categoryModelDto.productId} ]");
             }
             var category = await _db.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstOrDefaultAsync();
             if(category == null)
             {
-                return new Status(0, $"The category was not found" +
+                return new Status(RequestStatus.DataIsNotFound, $"The category was not found" +
                     $"[ categoryID: {categoryModelDto.categoryId} ]");
             }
 
@@ -93,7 +93,7 @@ namespace AccountingForExpirationDates.Service
             category.Product.Add(product);
             await _db.SaveChangesAsync();
 
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
         }
 
 
@@ -121,19 +121,19 @@ namespace AccountingForExpirationDates.Service
                         products.Add(productModel);
                     }
 
-                    return new Outcome<Status, ProductModelDto[]>(new Status(1, "success"), products.ToArray());
+                    return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.OK, "success"), products.ToArray());
 
                 }
                 else
                 {
-                    return new Outcome<Status, ProductModelDto[]>(new Status(0, $"the category is empty. " +
+                    return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.DataIsNull, $"the category is empty. " +
                                        $"[ categoryID: {categoryModel.Id} ]"), 
                                        products.ToArray());
                 }
             }
             else
             {
-                return new Outcome<Status, ProductModelDto[]>(new Status(0, $"The category was not found. " +
+                return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.DataIsNotFound, $"The category was not found. " +
                                     $"[ categoryID: {categoryModel.Id} ]"),
                                     products.ToArray());
             }

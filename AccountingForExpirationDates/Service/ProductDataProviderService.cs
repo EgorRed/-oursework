@@ -36,13 +36,13 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(0, $"such a product already exists. " +
+                return new Status(RequestStatus.DataRepetition, $"such a product already exists. " +
                     $"[ {productModelDto.BarcodeType1} " +
                     $"{productModelDto.BarcodeType2} " +
                     $"{productModelDto.Name} ]");
 
             }
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
         }
 
 
@@ -62,7 +62,7 @@ namespace AccountingForExpirationDates.Service
                 allProduct.Products.Add(productModelDto);
             }
 
-            return new Outcome<Status, ProductModelDto[]>(new Status(1, "success"), allProduct.Products.ToArray());
+            return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.OK, "success"), allProduct.Products.ToArray());
         }
 
 
@@ -76,10 +76,10 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(0, "$The product was not found. " +
+                return new Status(RequestStatus.DataIsNotFound, "$The product was not found. " +
                     $"[ productID: {deleteProductModel.Id} ]");
             }
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
         }
 
         public async Task<Status> EditSellByProduct(EditSellByModel editSellByModel)
@@ -92,10 +92,10 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(0, "$The product was not found. " +
+                return new Status(RequestStatus.DataIsNotFound, "$The product was not found. " +
                     $"[ productID: {editSellByModel.Id} ]");
             }
-            return new Status(1, "success");
+            return new Status(RequestStatus.OK, "success");
 
         }
 
