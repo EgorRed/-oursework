@@ -2,6 +2,7 @@
 using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
+using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +21,9 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddProduct(ProductModelDto productModelDto)
+        public async Task<IActionResult> AddProduct([FromBody] AddProductModel productModelDto, [FromQuery]  WarehouseID warehouseID)
         {
-            var action = await _providerService.AddProduct(productModelDto);
+            var action = await _providerService.AddProduct(productModelDto, warehouseID);
             if (action.StatusCode == RequestStatus.OK) 
             {
                 return Ok(action.Description);
@@ -36,9 +37,9 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<ProductModelDto[]>> GetAllProduct()
+        public async Task<ActionResult<ProductDto[]>> GetAllProduct([FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.GetAllProduct(); 
+            var action = await _providerService.GetAllProduct(warehouseID); 
             if (action.status.StatusCode == RequestStatus.OK) 
             {
                 return action.data;
@@ -51,9 +52,9 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RemoveProduct(DeleteProductModel deleteProductModelDto)
+        public async Task<IActionResult> RemoveProduct([FromBody] DeleteProductModel deleteProductModelDto, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.DeleteProduct(deleteProductModelDto);
+            var action = await _providerService.DeleteProduct(deleteProductModelDto, warehouseID);
 
             if (action.StatusCode == RequestStatus.OK)
             {
@@ -67,9 +68,9 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> EditSellBy(EditSellByModel editSellByModelDto)
+        public async Task<IActionResult> EditSellBy([FromBody] EditSellByModel editSellByModelDto, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.EditSellByProduct(editSellByModelDto);
+            var action = await _providerService.EditSellByProduct(editSellByModelDto, warehouseID);
 
             if (action.StatusCode == RequestStatus.OK)
             {

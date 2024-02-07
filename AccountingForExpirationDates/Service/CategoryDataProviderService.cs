@@ -3,6 +3,7 @@ using AccountingForExpirationDates.DataBase.Entitys;
 using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
+using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Outcome<Status, CategoryDto[]>> GetAllCategory()
+        public async Task<Outcome<Status, CategoryDto[]>> GetAllCategory(WarehouseID warehouseID)
         {
             AllCategoryModel AllCategory = new AllCategoryModel();
 
@@ -35,7 +36,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> AddCategory(AddCategoryModel categoryModel)
+        public async Task<Status> AddCategory(AddCategoryModel categoryModel, WarehouseID warehouseID)
         {
             var category = await _db.Category.Where(x => x.Name.Equals(categoryModel.categoryName)).FirstOrDefaultAsync();
             if (category == null)
@@ -54,7 +55,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> RemoveCategory(RemoveCategoryModel categoryModel)
+        public async Task<Status> RemoveCategory(RemoveCategoryModel categoryModel, WarehouseID warehouseID)
         {
 
             var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.CategoryId);
@@ -74,7 +75,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> SetCategory(ProductCategoryModel categoryModelDto)
+        public async Task<Status> SetCategory(ProductCategoryModel categoryModelDto, WarehouseID warehouseID)
         {
             var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstOrDefaultAsync();
             if (product == null)
@@ -97,45 +98,56 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Outcome<Status, ProductModelDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        public async Task<Outcome<Status, ProductDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel, WarehouseID warehouseID)
         {
-            List<ProductModelDto> products = new List<ProductModelDto>();
-
-            var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.Id);
-            if (category != null)
+            var warehouse = await _db.Warehouses.Where(x => x.Id == categoryModel.Id).FirstOrDefaultAsync();
+            if (warehouse != null)
             {
-                if (category.Product != null && category.Product.Count != 0)
+
+
+                List<ProductDto> products = new List<ProductDto>();
+
+                var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.Id);
+                if (category != null)
                 {
-                    foreach (var item in category.Product)
+                    if (category.Product != null && category.Product.Count != 0)
                     {
-                        ProductModelDto productModel = new ProductModelDto();
-                        productModel.Id = item.Id;
-                        productModel.BarcodeType1 = item.BarcodeType1;
-                        productModel.BarcodeType2 = item.BarcodeType2;
-                        productModel.Name = item.Name;
-                        if (item.Category != null)
+                        foreach (var item in category.Product)
                         {
-                            productModel.categoryName = item.Category.Name;
+                            ProductDto productModel = new ProductDto();
+                            productModel.Id = item.Id;
+                            productModel.BarcodeType1 = item.BarcodeType1;
+                            productModel.BarcodeType2 = item.BarcodeType2;
+                            productModel.Name = item.Name;
+                            if (item.Category != null)
+                            {
+                                productModel.categoryName = item.Category.Name;
+                            }
+                            productModel.categoryId = item.CategoryId;
+                            products.Add(productModel);
                         }
-                        productModel.categoryId = item.CategoryId;
-                        products.Add(productModel);
+
+                        return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.OK, "success"), products.ToArray());
+
                     }
-
-                    return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.OK, "success"), products.ToArray());
-
+                    else
+                    {
+                        return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.DataIsNull, $"the category is empty. " +
+                                           $"[ categoryID: {categoryModel.Id} ]"),
+                                           products.ToArray());
+                    }
                 }
                 else
                 {
-                    return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.DataIsNull, $"the category is empty. " +
-                                       $"[ categoryID: {categoryModel.Id} ]"), 
-                                       products.ToArray());
+                    return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.DataIsNotFound, $"The category was not found. " +
+                                        $"[ categoryID: {categoryModel.Id} ]"),
+                                        products.ToArray());
                 }
             }
             else
             {
-                return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.DataIsNotFound, $"The category was not found. " +
-                                    $"[ categoryID: {categoryModel.Id} ]"),
-                                    products.ToArray());
+                return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
+                    $"WarehouseID: {categoryModel.Id}"), new ProductDto[0]);
             }
         }
     }

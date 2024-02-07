@@ -2,6 +2,7 @@
 {
     public class AllProductModel
     {
-        public List<ProductModelDto> Products { get; set; } = new List<ProductModelDto>();
+        //public int WarehouseID { get; set; }
+        public List<ProductDto> Products { get; set; } = new List<ProductDto>();
     }
 }

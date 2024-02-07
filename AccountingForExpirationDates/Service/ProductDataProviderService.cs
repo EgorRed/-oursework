@@ -3,6 +3,7 @@ using AccountingForExpirationDates.DataBase.Entitys;
 using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
+using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,83 +20,139 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> AddProduct(ProductModelDto productModelDto)
+        public async Task<Status> AddProduct(AddProductModel productModelDto, WarehouseID warehouseID)
         {
-            var code1 = await _db.Products.Where(x => x.BarcodeType1 == productModelDto.BarcodeType1).FirstOrDefaultAsync();
-            var code2 = await _db.Products.Where(x => x.BarcodeType2 == productModelDto.BarcodeType2).FirstOrDefaultAsync();
-
-            if (code1 == null && code2 == null)
+            var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+            if (Warehouse != null)
             {
-                ProductEntity productEntity = new ProductEntity();
-                productEntity.BarcodeType1 = productModelDto.BarcodeType1;
-                productEntity.BarcodeType2 = productModelDto.BarcodeType2;
-                productEntity.Name = productModelDto.Name;
-                productEntity.SellBy = productModelDto.SellBy;
-                await _db.Products.AddAsync(productEntity);
-                await _db.SaveChangesAsync();
+                var code1 = await _db.Products.Where(x => x.BarcodeType1 == productModelDto.BarcodeType1).FirstOrDefaultAsync();
+                var code2 = await _db.Products.Where(x => x.BarcodeType2 == productModelDto.BarcodeType2).FirstOrDefaultAsync();
+
+                if (code1 == null && code2 == null)
+                {
+                    ProductEntity productEntity = new ProductEntity();
+                    productEntity.BarcodeType1 = productModelDto.BarcodeType1;
+                    productEntity.BarcodeType2 = productModelDto.BarcodeType2;
+                    productEntity.Name = productModelDto.Name;
+                    productEntity.SellBy = productModelDto.SellBy;
+                    productEntity.WarehouseId = Warehouse.Id;
+                    productEntity.Warehouse = Warehouse;
+
+                    Warehouse.Product.Add(productEntity);
+                    await _db.Products.AddAsync(productEntity);
+
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    return new Status(RequestStatus.DataRepetition, $"such a product already exists. " +
+                        $"[ {productModelDto.BarcodeType1} " +
+                        $"{productModelDto.BarcodeType2} " +
+                        $"{productModelDto.Name} ]");
+
+                }
+                return new Status(RequestStatus.OK, "success");
             }
             else
             {
-                return new Status(RequestStatus.DataRepetition, $"such a product already exists. " +
-                    $"[ {productModelDto.BarcodeType1} " +
-                    $"{productModelDto.BarcodeType2} " +
-                    $"{productModelDto.Name} ]");
-
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}");
             }
-            return new Status(RequestStatus.OK, "success");
         }
 
 
-        public async Task<Outcome<Status, ProductModelDto[]>> GetAllProduct()
+        public async Task<Outcome<Status, ProductDto[]>> GetAllProduct(WarehouseID warehouseID)
         {
-            AllProductModel allProduct = new AllProductModel();
-            foreach (var product in await _db.Products.Include(x => x.Category).ToArrayAsync()) 
+            var warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+
+            
+            if (warehouse != null)
             {
-                ProductModelDto productModelDto = new ProductModelDto();
-                productModelDto.Id = product.Id;
-                productModelDto.BarcodeType1 = product.BarcodeType1;
-                productModelDto.BarcodeType2 = product.BarcodeType2;
-                productModelDto.Name = product.Name;
-                productModelDto.SellBy = product.SellBy;
-                productModelDto.categoryId = product.CategoryId;
-                productModelDto.categoryName = product.Category?.Name;
-                allProduct.Products.Add(productModelDto);
-            }
+                List<ProductDto> products = new List<ProductDto>();
 
-            return new Outcome<Status, ProductModelDto[]>(new Status(RequestStatus.OK, "success"), allProduct.Products.ToArray());
-        }
+                var productsInWarehouse = await _db.Products.Include(w => w.Warehouse)
+                                                            .Include(c => c.Category)
+                                                            .Where(x => x.WarehouseId == warehouseID.WarehouseIndex)
+                                                            .ToArrayAsync();
 
+                foreach (var product in productsInWarehouse)
+                {
+                    ProductDto productEntity = new ProductDto();
+                    productEntity.Id = product.Id;
+                    productEntity.WarehouseID = (int)product.WarehouseId;
+                    productEntity.WarehouseName = product.Warehouse?.Name;
+                    productEntity.BarcodeType1 = product.BarcodeType1;
+                    productEntity.BarcodeType2 = product.BarcodeType2;
+                    productEntity.Name = product.Name;
+                    productEntity.SellBy = product.SellBy;
+                    productEntity.categoryName = product.Category?.Name;
+                    productEntity.categoryId = product.Category?.Id;
 
-        public async Task<Status> DeleteProduct(DeleteProductModel deleteProductModel)
-        {
-            var product = await _db.Products.Where(x => x.Id == deleteProductModel.Id).FirstOrDefaultAsync();
-            if (product != null)
-            {
-                _db.Products.Remove(product);
-                await _db.SaveChangesAsync();
+                    products.Add(productEntity);
+                }
+
+                return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.OK, "success"), products.ToArray());
             }
             else
             {
-                return new Status(RequestStatus.DataIsNotFound, "$The product was not found. " +
-                    $"[ productID: {deleteProductModel.Id} ]");
+                return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}"), new ProductDto[0]);
             }
-            return new Status(RequestStatus.OK, "success");
+
         }
 
-        public async Task<Status> EditSellByProduct(EditSellByModel editSellByModel)
+
+        public async Task<Status> DeleteProduct(DeleteProductModel deleteProductModel, WarehouseID warehouseID)
         {
-             var Product = await _db.Products.Where(x => x.Id == editSellByModel.Id).FirstOrDefaultAsync();
-            if (Product != null) 
+
+            var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+            if (Warehouse != null)
             {
-                Product.SellBy = editSellByModel.SellBy;
-                await _db.SaveChangesAsync();
+
+                var product = await _db.Products.Where(x => x.Id == deleteProductModel.Id).FirstOrDefaultAsync();
+                if (product != null)
+                {
+                    _db.Products.Remove(product);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    return new Status(RequestStatus.DataIsNotFound, "$The product was not found. " +
+                        $"[ productID: {deleteProductModel.Id} ]");
+                }
+                return new Status(RequestStatus.OK, "success");
             }
             else
             {
-                return new Status(RequestStatus.DataIsNotFound, "$The product was not found. " +
-                    $"[ productID: {editSellByModel.Id} ]");
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}");
             }
-            return new Status(RequestStatus.OK, "success");
+        }
+
+        public async Task<Status> EditSellByProduct(EditSellByModel editSellByModel, WarehouseID warehouseID)
+        {
+
+            var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+            if (Warehouse != null)
+            {
+                var Product = await _db.Products.Where(x => x.Id == editSellByModel.Id).FirstOrDefaultAsync();
+                if (Product != null)
+                {
+                    Product.SellBy = editSellByModel.SellBy;
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    return new Status(RequestStatus.DataIsNotFound, "$The product was not found. " +
+                        $"[ productID: {editSellByModel.Id} ]");
+                }
+                return new Status(RequestStatus.OK, "success");
+            }
+            else
+            {
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}");
+            }
 
         }
 

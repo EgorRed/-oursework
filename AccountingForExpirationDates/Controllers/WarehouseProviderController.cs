@@ -1,4 +1,5 @@
 ﻿using AccountingForExpirationDates.HelperClasses;
+using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -71,5 +72,19 @@ namespace AccountingForExpirationDates.Controllers
                 return BadRequest(action.Description);
             }
         }
+
+        //[HttpPost]
+        //public async Task<ActionResult<ProductDto[]>> GetAllProductsFromWarehouse(GetAllProductsFromWarehouseModel WarehouseModel)
+        //{
+        //    var action = await _providerService.GetAllProductsFromWarehouse(WarehouseModel);
+        //    if (action.status.StatusCode == RequestStatus.OK)
+        //    {
+        //        return action.data;
+        //    }
+        //    else
+        //    {
+        //        return BadRequest(action.status.Description);
+        //    }
+        //}
     }
 }

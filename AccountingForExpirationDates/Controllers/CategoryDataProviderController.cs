@@ -1,6 +1,7 @@
 ﻿using AccountingForExpirationDates.HelperClasses;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
+using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,10 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(AddCategoryModel category)
+        public async Task<IActionResult> AddCategory([FromBody] AddCategoryModel category, [FromQuery] WarehouseID warehouseID)
         {
 
-            var action = await _providerService.AddCategory(category);
+            var action = await _providerService.AddCategory(category, warehouseID);
 
             if (action.StatusCode == RequestStatus.OK) 
             {
@@ -37,9 +38,9 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RemoveCategory(RemoveCategoryModel category)
+        public async Task<IActionResult> RemoveCategory([FromBody] RemoveCategoryModel category, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.RemoveCategory(category);
+            var action = await _providerService.RemoveCategory(category, warehouseID);
 
             if (action.StatusCode == RequestStatus.OK)
             {
@@ -54,13 +55,13 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDto[]>> GetAllCategory()
+        public async Task<ActionResult<CategoryDto[]>> GetAllCategory([FromBody] WarehouseID warehouseID)
         {
-            var action = await _providerService.GetAllCategory();
+            var action = await _providerService.GetAllCategory(warehouseID);
 
             if (action.status.StatusCode == RequestStatus.OK)
             {
-                return Ok(action.status.Description);
+                return action.data;
             }
             else
             {
@@ -70,9 +71,9 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SetCategory(ProductCategoryModel productCategoryModel)
+        public async Task<IActionResult> SetCategory([FromBody] ProductCategoryModel productCategoryModel, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.SetCategory(productCategoryModel);
+            var action = await _providerService.SetCategory(productCategoryModel, warehouseID);
 
             if (action.StatusCode == RequestStatus.OK)
             {
@@ -86,9 +87,9 @@ namespace AccountingForExpirationDates.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductModelDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel)
+        public async Task<ActionResult<ProductDto[]>> GetAllProductFromCategory([FromBody] GetAllProductFromCategoryModel categoryModel, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.GetAllProductFromCategory(categoryModel);
+            var action = await _providerService.GetAllProductFromCategory(categoryModel, warehouseID);
 
             if (action.status.StatusCode == RequestStatus.OK)
             {
