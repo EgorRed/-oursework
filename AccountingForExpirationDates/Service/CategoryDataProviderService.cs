@@ -21,90 +21,135 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Outcome<Status, CategoryDto[]>> GetAllCategory(WarehouseID warehouseID)
         {
-            AllCategoryModel AllCategory = new AllCategoryModel();
-
-            foreach (var category in await _db.Category.ToArrayAsync())
+            //var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+            var Warehouse = await _db.Warehouses.Include(x => x.Category).FirstOrDefaultAsync(w => w.Id == warehouseID.WarehouseIndex);
+            if (Warehouse != null)
             {
-                CategoryDto categoryDto = new CategoryDto();
-                categoryDto.Id = category.Id;
-                categoryDto.Name = category.Name;
+                AllCategoryModel AllCategory = new AllCategoryModel();
+                //var categories = await _db.Warehouses.Include(x => x.Category).ToArrayAsync(
 
-                AllCategory.Categories.Add(categoryDto);
+                foreach (var category in Warehouse.Category)
+                {
+                    CategoryDto categoryDto = new CategoryDto();
+                    categoryDto.Id = category.Id;
+                    categoryDto.Name = category.Name;
+
+                    AllCategory.Categories.Add(categoryDto);
+                }
+
+                return new Outcome<Status, CategoryDto[]>(new Status(RequestStatus.OK, "success"), AllCategory.Categories.ToArray());
             }
-
-            return new Outcome<Status, CategoryDto[]>(new Status(RequestStatus.OK, "success"), AllCategory.Categories.ToArray());
+            else
+            {
+                return new Outcome<Status, CategoryDto[]>(new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found. " +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}"), new CategoryDto[0]);
+            }
         }
 
 
         public async Task<Status> AddCategory(AddCategoryModel categoryModel, WarehouseID warehouseID)
         {
-            var category = await _db.Category.Where(x => x.Name.Equals(categoryModel.categoryName)).FirstOrDefaultAsync();
-            if (category == null)
+            var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+            if (Warehouse != null)
             {
-                CategoryEntity categoryEntity = new CategoryEntity();
-                categoryEntity.Name = categoryModel.categoryName;
-                await _db.Category.AddAsync(categoryEntity);
-                await _db.SaveChangesAsync();
+
+                var category = await _db.Category.Where(x => x.Name.Equals(categoryModel.categoryName)).FirstOrDefaultAsync();
+                if (category == null)
+                {
+                    CategoryEntity categoryEntity = new CategoryEntity();
+                    categoryEntity.Name = categoryModel.categoryName;
+                    categoryEntity.WarehouseId = Warehouse.Id;
+                    categoryEntity.Warehouse = Warehouse;
+                    Warehouse.Category.Add(categoryEntity);
+                    await _db.Category.AddAsync(categoryEntity);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    return new Status(RequestStatus.DataRepetition, $"this category already exists. " +
+                        $"[ category name: {categoryModel.categoryName} ]");
+                }
+                return new Status(RequestStatus.OK, "success");
             }
             else
             {
-                return new Status(RequestStatus.DataRepetition, $"this category already exists. " +
-                    $"[ category name: {categoryModel.categoryName} ]");
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found. " +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}");
             }
-            return new Status(RequestStatus.OK, "success");
         }
 
 
         public async Task<Status> RemoveCategory(RemoveCategoryModel categoryModel, WarehouseID warehouseID)
         {
-
-            var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.CategoryId);
-
-            if (category != null)
+            var Warehouse = await _db.Warehouses.Include(c => c.Category)
+                                                .Include(p => p.Product)
+                                                .FirstOrDefaultAsync(x => x.Id == warehouseID.WarehouseIndex);
+            if (Warehouse != null)
             {
-                category.Product.Clear();
-                _db.Category.Remove(category);
-                await _db.SaveChangesAsync();
+                //var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.CategoryId);
+                var category = Warehouse.Category.Where(x => x.Id == categoryModel.CategoryId).FirstOrDefault();
+                if (category != null)
+                {
+                    
+                    category.Product.Clear();
+                    var res = Warehouse.Category.Remove(category);
+                    _db.Category.Remove(category);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    return new Status(RequestStatus.DataIsNotFound, $"The category was not found. " +
+                        $"[ categoryID: {categoryModel.CategoryId} ]");
+                }
+                return new Status(RequestStatus.OK, "success");
             }
             else
             {
-                return new Status(RequestStatus.DataIsNotFound, $"The category was not found. " +
-                    $"[ categoryID: {categoryModel.CategoryId} ]");
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found. " +
+                    $"WarehouseID: {warehouseID.WarehouseIndex}");
             }
-            return new Status(RequestStatus.OK, "success");
         }
 
 
         public async Task<Status> SetCategory(ProductCategoryModel categoryModelDto, WarehouseID warehouseID)
         {
-            var product = await _db.Products.Where(x => x.Id == categoryModelDto.productId).FirstOrDefaultAsync();
-            if (product == null)
+            var Warehouse = await _db.Warehouses.Include(c => c.Category)
+                                                .Include(p => p.Product)
+                                                .FirstOrDefaultAsync(x => x.Id == warehouseID.WarehouseIndex);
+            if (Warehouse != null)
             {
-                return new Status(RequestStatus.DataIsNotFound, $"The product was not found" +
-                    $"[ productID: {categoryModelDto.productId} ]");
+                var product = Warehouse.Product.Where(x => x.Id == categoryModelDto.productId).FirstOrDefault();
+                if (product == null)
+                {
+                    return new Status(RequestStatus.DataIsNotFound, $"The product was not found" +
+                        $"[ productID: {categoryModelDto.productId} ]");
+                }
+                var category = Warehouse.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstOrDefault();
+                if (category == null)
+                {
+                    return new Status(RequestStatus.DataIsNotFound, $"The category was not found" +
+                        $"[ categoryID: {categoryModelDto.categoryId} ]");
+                }
+
+                product.Category = category;
+                category.Product.Add(product);
+                await _db.SaveChangesAsync();
+
+                return new Status(RequestStatus.OK, "success");
             }
-            var category = await _db.Category.Where(x => x.Id == categoryModelDto.categoryId).FirstOrDefaultAsync();
-            if(category == null)
+            else
             {
-                return new Status(RequestStatus.DataIsNotFound, $"The category was not found" +
-                    $"[ categoryID: {categoryModelDto.categoryId} ]");
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found. " +
+                        $"WarehouseID: {warehouseID.WarehouseIndex}");
             }
-
-            product.Category = category;
-            category.Product.Add(product);
-            await _db.SaveChangesAsync();
-
-            return new Status(RequestStatus.OK, "success");
         }
 
 
         public async Task<Outcome<Status, ProductDto[]>> GetAllProductFromCategory(GetAllProductFromCategoryModel categoryModel, WarehouseID warehouseID)
         {
-            var warehouse = await _db.Warehouses.Where(x => x.Id == categoryModel.Id).FirstOrDefaultAsync();
+            var warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
             if (warehouse != null)
             {
-
-
                 List<ProductDto> products = new List<ProductDto>();
 
                 var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.Id);
@@ -114,16 +159,17 @@ namespace AccountingForExpirationDates.Service
                     {
                         foreach (var item in category.Product)
                         {
-                            ProductDto productModel = new ProductDto();
-                            productModel.Id = item.Id;
-                            productModel.BarcodeType1 = item.BarcodeType1;
-                            productModel.BarcodeType2 = item.BarcodeType2;
-                            productModel.Name = item.Name;
-                            if (item.Category != null)
+                            ProductDto productModel = new ProductDto()
                             {
-                                productModel.categoryName = item.Category.Name;
-                            }
-                            productModel.categoryId = item.CategoryId;
+                                Id = item.Id,
+                                WarehouseId = warehouseID.WarehouseIndex,
+                                WarehouseName = item.Warehouse?.Name,
+                                BarcodeType1 = item.BarcodeType1,
+                                BarcodeType2 = item.BarcodeType2,
+                                Name = item.Name,
+                                categoryId = item.CategoryId,
+                                categoryName = item.Category?.Name
+                            };
                             products.Add(productModel);
                         }
 

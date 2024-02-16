@@ -55,7 +55,7 @@ namespace AccountingForExpirationDates.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDto[]>> GetAllCategory([FromBody] WarehouseID warehouseID)
+        public async Task<ActionResult<CategoryDto[]>> GetAllCategory([FromQuery] WarehouseID warehouseID)
         {
             var action = await _providerService.GetAllCategory(warehouseID);
 
@@ -93,7 +93,7 @@ namespace AccountingForExpirationDates.Controllers
 
             if (action.status.StatusCode == RequestStatus.OK)
             {
-                return Ok(action.status.Description);
+                return Ok(action.data);
             }
             else
             {

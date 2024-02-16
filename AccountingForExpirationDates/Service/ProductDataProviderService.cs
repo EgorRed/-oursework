@@ -55,7 +55,7 @@ namespace AccountingForExpirationDates.Service
             }
             else
             {
-                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
+                return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found. " +
                     $"WarehouseID: {warehouseID.WarehouseIndex}");
             }
         }
@@ -79,7 +79,7 @@ namespace AccountingForExpirationDates.Service
                 {
                     ProductDto productEntity = new ProductDto();
                     productEntity.Id = product.Id;
-                    productEntity.WarehouseID = (int)product.WarehouseId;
+                    productEntity.WarehouseId = (int)product.WarehouseId;
                     productEntity.WarehouseName = product.Warehouse?.Name;
                     productEntity.BarcodeType1 = product.BarcodeType1;
                     productEntity.BarcodeType2 = product.BarcodeType2;

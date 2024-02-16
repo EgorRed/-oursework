@@ -10,6 +10,5 @@ namespace AccountingForExpirationDates.Service.Interfaces
         Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel);
         Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel);
         Task<Outcome<Status,WarehouseDto[]>> GetAllWarehouses();
-        //Task<Outcome<Status, ProductDto[]>> GetAllProductsFromWarehouse(GetAllProductsFromWarehouseModel WarehouseModel);
     }
 }

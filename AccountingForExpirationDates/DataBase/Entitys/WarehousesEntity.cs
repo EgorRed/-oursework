@@ -7,5 +7,6 @@
         public string? Description { get; set; }
 
         public List<ProductEntity> Product { get; set; } = new List<ProductEntity>();
+        public List<CategoryEntity> Category { get; set; } = new List<CategoryEntity>();
     }
 }

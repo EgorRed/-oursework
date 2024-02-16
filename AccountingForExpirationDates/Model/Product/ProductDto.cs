@@ -5,7 +5,7 @@ namespace AccountingForExpirationDates.Model.Product
     public class ProductDto
     {
         public int Id { get; set; }
-        public int WarehouseID { get; set; }
+        public int WarehouseId { get; set; }
         public string? WarehouseName { get; set; }
         public string? BarcodeType1 { get; set; }
         public string? BarcodeType2 { get; set; }
