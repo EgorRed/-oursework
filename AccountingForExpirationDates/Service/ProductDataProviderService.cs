@@ -22,6 +22,7 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Status> AddProduct(AddProductModel productModelDto, WarehouseID warehouseID)
         {
+            
             var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
             if (Warehouse != null)
             {
@@ -77,16 +78,18 @@ namespace AccountingForExpirationDates.Service
 
                 foreach (var product in productsInWarehouse)
                 {
-                    ProductDto productEntity = new ProductDto();
-                    productEntity.Id = product.Id;
-                    productEntity.WarehouseId = (int)product.WarehouseId;
-                    productEntity.WarehouseName = product.Warehouse?.Name;
-                    productEntity.BarcodeType1 = product.BarcodeType1;
-                    productEntity.BarcodeType2 = product.BarcodeType2;
-                    productEntity.Name = product.Name;
-                    productEntity.SellBy = product.SellBy;
-                    productEntity.categoryName = product.Category?.Name;
-                    productEntity.categoryId = product.Category?.Id;
+                    ProductDto productEntity = new ProductDto()
+                    {
+                        Id = product.Id,
+                        WarehouseId = warehouseID.WarehouseIndex,
+                        WarehouseName = product.Warehouse?.Name,
+                        BarcodeType1 = product.BarcodeType1,
+                        BarcodeType2 = product.BarcodeType2,
+                        Name = product.Name,
+                        SellBy = product.SellBy,
+                        categoryId = product.CategoryId,
+                        categoryName = product.Category?.Name
+                    };
 
                     products.Add(productEntity);
                 }

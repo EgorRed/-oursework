@@ -87,40 +87,5 @@ namespace AccountingForExpirationDates.Service
                     $"[WarehouseID: {WarehouseModel.Id}]");
             }
         }
-
-
-        //public async Task<Outcome<Status, ProductDto[]>> GetAllProductsFromWarehouse(GetAllProductsFromWarehouseModel WarehouseModel)
-        //{
-        //    var warehouse = await _db.Warehouses.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == WarehouseModel.Id);
-        //    List<ProductDto> products = new List<ProductDto>();
-        //    if (warehouse != null)
-        //    {
-                
-        //        foreach (var product in warehouse.Product)
-        //        {
-        //            ProductDto productEntity = new ProductDto();
-        //            productEntity.Id = product.Id;
-        //            productEntity.WarehouseID = warehouse.Id;
-        //            productEntity.WarehouseName = warehouse.Name;
-        //            productEntity.BarcodeType1 = product.BarcodeType1;
-        //            productEntity.BarcodeType2 = product.BarcodeType2;
-        //            productEntity.Name = product.Name;
-        //            productEntity.SellBy = product.SellBy;
-        //            productEntity.categoryName = product.Category?.Name;                   
-
-        //            products.Add(productEntity);
-        //        }
-
-        //        return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.OK, "success"), products.ToArray());
-
-        //    }
-        //    else
-        //    {
-
-        //        return new Outcome<Status, ProductDto[]>(new Status(RequestStatus.DataIsNotFound, $"There is no such warehouse." +
-        //            $"[WarehouseID: {WarehouseModel.Id}]"), products.ToArray());
-
-        //    }
-        //}
     }
 }

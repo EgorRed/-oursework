@@ -6,6 +6,7 @@ using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 
 namespace AccountingForExpirationDates.Service
 {
@@ -21,6 +22,8 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Outcome<Status, CategoryDto[]>> GetAllCategory(WarehouseID warehouseID)
         {
+
+
             //var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
             var Warehouse = await _db.Warehouses.Include(x => x.Category).FirstOrDefaultAsync(w => w.Id == warehouseID.WarehouseIndex);
             if (Warehouse != null)

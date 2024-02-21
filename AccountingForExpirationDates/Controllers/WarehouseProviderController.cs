@@ -2,19 +2,23 @@
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountingForExpirationDates.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class WarehouseProviderController : Controller
     {
         IWarehouseProviderService _providerService;
+        
 
         public WarehouseProviderController(IWarehouseProviderService providerService)
         {
             _providerService = providerService;
+            
         }
 
         [HttpPost]

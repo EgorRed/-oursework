@@ -4,10 +4,12 @@ using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountingForExpirationDates.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class ProductDataProviderController : ControllerBase
