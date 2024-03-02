@@ -3,11 +3,12 @@ using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountingForExpirationDates.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class WarehouseProviderController : Controller
@@ -24,6 +25,8 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWarehouse(CreateWarehouseModel WarehouseModel)
         {
+            
+
             var action = await _providerService.CreateWarehouse(WarehouseModel);
             if (action.StatusCode == RequestStatus.OK)
             {
@@ -35,9 +38,11 @@ namespace AccountingForExpirationDates.Controllers
             }
         }
 
+
         [HttpPost]
         public async Task<ActionResult<WarehouseDto[]>> GetAllWarehouses()
         {
+            
             var action = await _providerService.GetAllWarehouses();
             if (action.status.StatusCode == RequestStatus.OK)
             {
@@ -49,11 +54,14 @@ namespace AccountingForExpirationDates.Controllers
             }
         }
 
+    
         [HttpPost]
         public async Task<IActionResult> RemoveWarehouse(RemoveWarehouseModel WarehouseModel)
         {
+            var actions = new List<Status>();
+
             var action = await _providerService.RemoveWarehouse(WarehouseModel);
-            if(action.StatusCode == RequestStatus.OK)
+            if (action.StatusCode == RequestStatus.OK)
             {
                 return Ok(action.Description);
             }
@@ -63,6 +71,7 @@ namespace AccountingForExpirationDates.Controllers
             }
         }
 
+      
         [HttpPost]
         public async Task<IActionResult> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel)
         {
