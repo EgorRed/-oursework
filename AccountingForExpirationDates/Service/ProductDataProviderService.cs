@@ -1,6 +1,7 @@
 ﻿using AccountingForExpirationDates.DataBase;
 using AccountingForExpirationDates.DataBase.Entitys;
 using AccountingForExpirationDates.HelperClasses;
+using AccountingForExpirationDates.Model.Auth;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
@@ -20,7 +21,8 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> AddProduct(AddProductModel productModelDto, WarehouseID warehouseID)
+
+        public async Task<Status> AddProduct(AddProductModel productModelDto, WarehouseID warehouseID, UserNameModel userName)
         {
             
             var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
@@ -62,7 +64,8 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Outcome<Status, ProductDto[]>> GetAllProduct(WarehouseID warehouseID)
+
+        public async Task<Outcome<Status, ProductDto[]>> GetAllProduct(WarehouseID warehouseID, UserNameModel userName)
         {
             var warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
 
@@ -105,7 +108,8 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> DeleteProduct(DeleteProductModel deleteProductModel, WarehouseID warehouseID)
+
+        public async Task<Status> DeleteProduct(DeleteProductModel deleteProductModel, WarehouseID warehouseID, UserNameModel userName)
         {
 
             var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
@@ -132,7 +136,9 @@ namespace AccountingForExpirationDates.Service
             }
         }
 
-        public async Task<Status> EditSellByProduct(EditSellByModel editSellByModel, WarehouseID warehouseID)
+
+
+        public async Task<Status> EditSellByProduct(EditSellByModel editSellByModel, WarehouseID warehouseID, UserNameModel userName)
         {
 
             var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
@@ -155,9 +161,8 @@ namespace AccountingForExpirationDates.Service
             {
                 return new Status(RequestStatus.DataIsNotFound, $"The warehouse was not found." +
                     $"WarehouseID: {warehouseID.WarehouseIndex}");
+
             }
-
         }
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AccountingForExpirationDates.DataBase;
 using AccountingForExpirationDates.DataBase.Entitys;
 using AccountingForExpirationDates.HelperClasses;
+using AccountingForExpirationDates.Model.Auth;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
@@ -17,7 +18,7 @@ namespace AccountingForExpirationDates.Service
             _db = db;
         }
 
-        public async Task<Status> CreateWarehouse(CreateWarehouseModel WarehouseModel)
+        public async Task<Status> CreateWarehouse(CreateWarehouseModel WarehouseModel, UserNameModel userName)
         {
             WarehouseEntity warehouse = new WarehouseEntity();
             if (WarehouseModel != null) 
@@ -33,7 +34,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Outcome<Status, WarehouseDto[]>> GetAllWarehouses()
+        public async Task<Outcome<Status, WarehouseDto[]>> GetAllWarehouses(UserNameModel userName)
         {
             var warehouses = await _db.Warehouses.ToArrayAsync();
             var warehouseDtoList = new List<WarehouseDto>();
@@ -50,13 +51,15 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel)
+        public async Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel, UserNameModel userName)
         {
-            var warehouse = await _db.Warehouses.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == WarehouseModel.Id);
+            var warehouse = await _db.Warehouses.Include(p => p.Product).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == WarehouseModel.Id);
             if (warehouse != null)
             {
                 
                 warehouse.Product.Clear();
+                warehouse.Category.Clear();
+                
                 _db.Warehouses.Remove(warehouse);
                 await _db.SaveChangesAsync();
                 return new Status(RequestStatus.OK, "success");
@@ -70,7 +73,7 @@ namespace AccountingForExpirationDates.Service
         }
 
 
-        public async Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel)
+        public async Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel, UserNameModel userName)
         {
             var warehouse = await _db.Warehouses.Where(x => x.Id == WarehouseModel.Id).FirstOrDefaultAsync();
             if (warehouse != null) 

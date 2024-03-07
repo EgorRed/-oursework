@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
@@ -79,12 +79,13 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
+    options.AddPolicy("MyPolicy",
                       policy =>
                       {
-                          policy.WithOrigins()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+
                       });
 });
 
@@ -96,11 +97,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors("MyPolicy");
+
 app.MapControllers();
+
 
 app.Run();

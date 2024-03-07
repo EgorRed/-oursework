@@ -14,7 +14,8 @@ namespace AccountingForExpirationDates.DataBase
         public DbSet<CategoryEntity> Category { get; set; }
         public DbSet<PhotoEntity> Photo { get; set; }
         public DbSet<WarehouseEntity> Warehouses { get; set; }
-
+        public DbSet<AccessToWarehouseEntity> AccessToWarehouse {  get; set; }
+ 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

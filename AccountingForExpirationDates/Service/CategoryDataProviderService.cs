@@ -24,12 +24,10 @@ namespace AccountingForExpirationDates.Service
         {
 
 
-            //var Warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
             var Warehouse = await _db.Warehouses.Include(x => x.Category).FirstOrDefaultAsync(w => w.Id == warehouseID.WarehouseIndex);
             if (Warehouse != null)
             {
                 AllCategoryModel AllCategory = new AllCategoryModel();
-                //var categories = await _db.Warehouses.Include(x => x.Category).ToArrayAsync(
 
                 foreach (var category in Warehouse.Category)
                 {
@@ -84,12 +82,13 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Status> RemoveCategory(RemoveCategoryModel categoryModel, WarehouseID warehouseID)
         {
+            
+
             var Warehouse = await _db.Warehouses.Include(c => c.Category)
                                                 .Include(p => p.Product)
                                                 .FirstOrDefaultAsync(x => x.Id == warehouseID.WarehouseIndex);
             if (Warehouse != null)
             {
-                //var category = await _db.Category.Include(p => p.Product).FirstOrDefaultAsync(x => x.Id == categoryModel.CategoryId);
                 var category = Warehouse.Category.Where(x => x.Id == categoryModel.CategoryId).FirstOrDefault();
                 if (category != null)
                 {
