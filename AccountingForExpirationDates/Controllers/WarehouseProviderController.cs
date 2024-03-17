@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace AccountingForExpirationDates.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class WarehouseProviderController : Controller
@@ -30,7 +30,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> CreateWarehouse(CreateWarehouseModel WarehouseModel)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.CreateWarehouse(WarehouseModel, userName);
             if (action.StatusCode == RequestStatus.OK)
@@ -49,7 +49,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<ActionResult<WarehouseDto[]>> GetAllWarehouses()
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.GetAllWarehouses(userName);
             if (action.status.StatusCode == RequestStatus.OK)
@@ -68,7 +68,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> RemoveWarehouse(RemoveWarehouseModel WarehouseModel)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var actions = new List<Status>();
 
@@ -89,7 +89,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.UpdateWarehouseDescription(WarehouseModel, userName);
             if (action.StatusCode == RequestStatus.OK)

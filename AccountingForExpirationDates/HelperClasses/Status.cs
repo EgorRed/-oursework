@@ -9,8 +9,7 @@ namespace AccountingForExpirationDates.HelperClasses
         DataIsNull,
         DataIsNotFound,
         DataRepetition,
-
-
+        AccessIsDenied
     }
 
 

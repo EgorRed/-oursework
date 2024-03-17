@@ -3,7 +3,7 @@
     public class AccessToWarehouseEntity
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public List<int> WarehouseId { get; set; } = new List<int>();
+        public string UserId { get; set; }
+        public List<WarehouseEntity> Warehouses { get; set; } = new List<WarehouseEntity>();
     }
 }
