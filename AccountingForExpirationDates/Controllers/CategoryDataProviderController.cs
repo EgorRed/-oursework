@@ -1,10 +1,12 @@
 ﻿using AccountingForExpirationDates.HelperClasses;
+using AccountingForExpirationDates.Model.Auth;
 using AccountingForExpirationDates.Model.Category;
 using AccountingForExpirationDates.Model.Product;
 using AccountingForExpirationDates.Model.Warehouse;
 using AccountingForExpirationDates.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AccountingForExpirationDates.Controllers
 {
@@ -24,8 +26,10 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] AddCategoryModel category, [FromQuery] WarehouseID warehouseID)
         {
+            UserNameModel userName = new UserNameModel();
+            userName.Name = User.Identity?.Name;
 
-            var action = await _providerService.AddCategory(category, warehouseID);
+            var action = await _providerService.AddCategory(category, warehouseID, userName);
 
             if (action.StatusCode == RequestStatus.OK) 
             {
@@ -42,7 +46,10 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveCategory([FromBody] RemoveCategoryModel category, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.RemoveCategory(category, warehouseID);
+            UserNameModel userName = new UserNameModel();
+            userName.Name = User.Identity?.Name;
+
+            var action = await _providerService.RemoveCategory(category, warehouseID, userName);
 
             if (action.StatusCode == RequestStatus.OK)
             {
@@ -59,7 +66,10 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoryDto[]>> GetAllCategory([FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.GetAllCategory(warehouseID);
+            UserNameModel userName = new UserNameModel();
+            userName.Name = User.Identity?.Name;
+
+            var action = await _providerService.GetAllCategory(warehouseID, userName);
 
             if (action.status.StatusCode == RequestStatus.OK)
             {
@@ -75,7 +85,10 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<IActionResult> SetCategory([FromBody] ProductCategoryModel productCategoryModel, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.SetCategory(productCategoryModel, warehouseID);
+            UserNameModel userName = new UserNameModel();
+            userName.Name = User.Identity?.Name;
+
+            var action = await _providerService.SetCategory(productCategoryModel, warehouseID, userName);
 
             if (action.StatusCode == RequestStatus.OK)
             {
@@ -91,7 +104,10 @@ namespace AccountingForExpirationDates.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductDto[]>> GetAllProductFromCategory([FromBody] GetAllProductFromCategoryModel categoryModel, [FromQuery] WarehouseID warehouseID)
         {
-            var action = await _providerService.GetAllProductFromCategory(categoryModel, warehouseID);
+            UserNameModel userName = new UserNameModel();
+            userName.Name = User.Identity?.Name;
+
+            var action = await _providerService.GetAllProductFromCategory(categoryModel, warehouseID, userName);
 
             if (action.status.StatusCode == RequestStatus.OK)
             {

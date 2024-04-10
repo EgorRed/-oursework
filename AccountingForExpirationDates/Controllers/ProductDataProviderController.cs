@@ -29,7 +29,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> AddProduct([FromBody] AddProductModel productModelDto, [FromQuery]  WarehouseID warehouseID)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.AddProduct(productModelDto, warehouseID, userName);
             if (action.StatusCode == RequestStatus.OK) 
@@ -48,7 +48,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<ActionResult<ProductDto[]>> GetAllProduct([FromQuery] WarehouseID warehouseID)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.GetAllProduct(warehouseID, userName); 
             if (action.status.StatusCode == RequestStatus.OK) 
@@ -66,7 +66,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> RemoveProduct([FromBody] DeleteProductModel deleteProductModelDto, [FromQuery] WarehouseID warehouseID)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.DeleteProduct(deleteProductModelDto, warehouseID, userName);
 
@@ -85,7 +85,7 @@ namespace AccountingForExpirationDates.Controllers
         public async Task<IActionResult> EditSellBy([FromBody] EditSellByModel editSellByModelDto, [FromQuery] WarehouseID warehouseID)
         {
             UserNameModel userName = new UserNameModel();
-            userName.Name = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+            userName.Name = User.Identity?.Name;
 
             var action = await _providerService.EditSellByProduct(editSellByModelDto, warehouseID, userName);
 

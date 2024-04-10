@@ -9,9 +9,9 @@ namespace AccountingForExpirationDates.Service.Interfaces
 {
     public interface IProductDataProviderService
     {
-        Task<Status> AddProduct(AddProductModel productModelDto , WarehouseID warehouseID, UserNameModel userId);
-        Task<Status> EditSellByProduct(EditSellByModel editSellByModel , WarehouseID warehouseID, UserNameModel userId);
-        Task<Status> DeleteProduct(DeleteProductModel deleteProductModel , WarehouseID warehouseID, UserNameModel userId);
+        Task<Status> AddProduct(AddProductModel productModelDto , WarehouseID warehouseID, UserNameModel userName);
+        Task<Status> EditSellByProduct(EditSellByModel editSellByModel , WarehouseID warehouseID, UserNameModel userName);
+        Task<Status> DeleteProduct(DeleteProductModel deleteProductModel , WarehouseID warehouseID, UserNameModel userName);
         
         Task<Outcome<Status, ProductDto[]>> GetAllProduct(WarehouseID warehouseID, UserNameModel userName);
     }

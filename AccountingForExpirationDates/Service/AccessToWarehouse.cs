@@ -12,6 +12,7 @@ namespace AccountingForExpirationDates.Service
     {
         private ApplicationDbContext _db;
 
+
         public AccessToWarehouse(ApplicationDbContext db)
         {
             _db = db;
@@ -35,7 +36,7 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Outcome<Status, AccessToWarehouseEntity[]>> GetWarehouseUsers(WarehouseID warehouseID)
         {
-            var warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).FirstOrDefaultAsync();
+            var warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).Include(y => y.AccessToWarehouse).FirstOrDefaultAsync();
             return new Outcome<Status, AccessToWarehouseEntity[]>(new Status(RequestStatus.OK, "success"), warehouse.AccessToWarehouse.ToArray());
         }
 
@@ -63,8 +64,6 @@ namespace AccountingForExpirationDates.Service
                 await _db.SaveChangesAsync();
                 return new Status(RequestStatus.OK, "success");
             }
-
-
         }
 
 
@@ -96,7 +95,5 @@ namespace AccountingForExpirationDates.Service
                 return new Outcome<Status, bool>(action.status, false);
             }        
         }
-
-
     }
 }

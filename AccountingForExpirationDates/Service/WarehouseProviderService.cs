@@ -31,8 +31,8 @@ namespace AccountingForExpirationDates.Service
                 warehouse.Description = WarehouseModel.Description;              
                 await _db.Warehouses.AddAsync(warehouse);
                 await _db.SaveChangesAsync();
-                
-                var accessResult = await _access.RegistrationUserInWarehouse(userName, new WarehouseID(warehouse.Id));
+
+                var accessResult = await _access.RegistrationUserInWarehouse(userName, new WarehouseID() { WarehouseIndex = warehouse.Id });
                 if (accessResult.StatusCode != RequestStatus.OK) 
                 {
                     return accessResult;
@@ -72,7 +72,7 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Status> RemoveWarehouse(RemoveWarehouseModel WarehouseModel, UserNameModel userName)
         {
-            var CAccess = await _access.CheckAccess(userName, new WarehouseID(WarehouseModel.Id));
+            var CAccess = await _access.CheckAccess(userName, new WarehouseID() { WarehouseIndex = WarehouseModel.Id });
             if (CAccess.data)
             {
 
@@ -82,7 +82,7 @@ namespace AccountingForExpirationDates.Service
 
                 if (warehouse != null)
                 {
-                    var action = await _access.RemoveAccess(userName, new WarehouseID(WarehouseModel.Id));
+                    var action = await _access.RemoveAccess(userName, new WarehouseID() { WarehouseIndex = WarehouseModel.Id });
                     if (action.StatusCode == RequestStatus.OK)
                     {
                         warehouse.Product.Clear();
@@ -112,7 +112,7 @@ namespace AccountingForExpirationDates.Service
 
         public async Task<Status> UpdateWarehouseDescription(UpdateWarehouseDescriptionModel WarehouseModel, UserNameModel userName)
         {
-            var CAccess = await _access.CheckAccess(userName, new WarehouseID(WarehouseModel.Id));
+            var CAccess = await _access.CheckAccess(userName, new WarehouseID() { WarehouseIndex = WarehouseModel.Id });
             if (CAccess.data)
             {
                 var warehouse = await _db.Warehouses.Where(x => x.Id == WarehouseModel.Id).FirstOrDefaultAsync();
