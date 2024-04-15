@@ -31,15 +31,7 @@ namespace AccountingForExpirationDates.Controllers
 
             var action = await _providerService.AddCategory(category, warehouseID, userName);
 
-            if (action.StatusCode == RequestStatus.OK) 
-            {
-                return Ok(action.Description);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-            
+            return StatusCode(StatusCodes.Status200OK, new Response { Status = action.StatusCode.ToString(), Message = action.Description });
         }
 
 
@@ -51,15 +43,7 @@ namespace AccountingForExpirationDates.Controllers
 
             var action = await _providerService.RemoveCategory(category, warehouseID, userName);
 
-            if (action.StatusCode == RequestStatus.OK)
-            {
-                return Ok(action.Description);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-
+            return StatusCode(StatusCodes.Status200OK, new Response { Status = action.StatusCode.ToString(), Message = action.Description });
         }
 
 
@@ -89,16 +73,7 @@ namespace AccountingForExpirationDates.Controllers
             userName.Name = User.Identity?.Name;
 
             var action = await _providerService.SetCategory(productCategoryModel, warehouseID, userName);
-
-            if (action.StatusCode == RequestStatus.OK)
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-            else
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-
+            return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
         }
 
         [HttpPost]

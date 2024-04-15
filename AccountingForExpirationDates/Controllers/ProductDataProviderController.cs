@@ -32,15 +32,7 @@ namespace AccountingForExpirationDates.Controllers
             userName.Name = User.Identity?.Name;
 
             var action = await _providerService.AddProduct(productModelDto, warehouseID, userName);
-            if (action.StatusCode == RequestStatus.OK) 
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-            else
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-
+            return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
         }
 
 
@@ -69,15 +61,7 @@ namespace AccountingForExpirationDates.Controllers
             userName.Name = User.Identity?.Name;
 
             var action = await _providerService.DeleteProduct(deleteProductModelDto, warehouseID, userName);
-
-            if (action.StatusCode == RequestStatus.OK)
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-            else
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
+            return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
         }
 
 
@@ -88,16 +72,7 @@ namespace AccountingForExpirationDates.Controllers
             userName.Name = User.Identity?.Name;
 
             var action = await _providerService.EditSellByProduct(editSellByModelDto, warehouseID, userName);
-
-            if (action.StatusCode == RequestStatus.OK)
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-            else
-            {
-                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
-            }
-
+            return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
         }
     }
 }
