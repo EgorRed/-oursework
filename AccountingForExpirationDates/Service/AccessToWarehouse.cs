@@ -30,14 +30,28 @@ namespace AccountingForExpirationDates.Service
         {
             var userID = await GetID(userName);
             var access = await _db.AccessToWarehouse.Where(x => x.UserId.Equals(userID)).Include(y => y.Warehouses).FirstOrDefaultAsync();
-            return new Outcome<Status, WarehouseEntity[]>(new Status(RequestStatus.OK, "success"), access.Warehouses.ToArray());
+            if (access != null)
+            {
+                return new Outcome<Status, WarehouseEntity[]>(new Status(RequestStatus.OK, "success"), access.Warehouses.ToArray());
+            }
+            else
+            {
+                return new Outcome<Status, WarehouseEntity[]>(new Status(RequestStatus.DataIsNull, "There are no warehouses"), new WarehouseEntity[0]);
+            }
         }
 
 
         public async Task<Outcome<Status, AccessToWarehouseEntity[]>> GetWarehouseUsers(WarehouseID warehouseID)
         {
             var warehouse = await _db.Warehouses.Where(x => x.Id == warehouseID.WarehouseIndex).Include(y => y.AccessToWarehouse).FirstOrDefaultAsync();
-            return new Outcome<Status, AccessToWarehouseEntity[]>(new Status(RequestStatus.OK, "success"), warehouse.AccessToWarehouse.ToArray());
+            if (warehouse != null)
+            {
+                return new Outcome<Status, AccessToWarehouseEntity[]>(new Status(RequestStatus.OK, "success"), warehouse.AccessToWarehouse.ToArray());
+            }
+            else
+            {
+                return new Outcome<Status, AccessToWarehouseEntity[]>(new Status(RequestStatus.DataIsNull, "There are no warehouses"), new AccessToWarehouseEntity[0]);
+            }
         }
 
 

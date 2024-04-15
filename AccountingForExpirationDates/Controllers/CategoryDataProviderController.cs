@@ -37,7 +37,7 @@ namespace AccountingForExpirationDates.Controllers
             }
             else
             {
-                return BadRequest(action.Description);
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = action.StatusCode.ToString(), Message = action.Description });
             }
             
         }
@@ -57,7 +57,7 @@ namespace AccountingForExpirationDates.Controllers
             }
             else
             {
-                return BadRequest(action.Description);
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = action.StatusCode.ToString(), Message = action.Description });
             }
 
         }
@@ -73,11 +73,11 @@ namespace AccountingForExpirationDates.Controllers
 
             if (action.status.StatusCode == RequestStatus.OK)
             {
-                return action.data;
+                return Ok(new { Status = action.status.StatusCode.ToString(), Message = action.status.Description, Data = action.data });
             }
             else
             {
-                return BadRequest(action.status.Description);
+                return Ok(new { Status = action.status.StatusCode.ToString(), Message = action.status.Description });
             }
         }
 
@@ -92,11 +92,11 @@ namespace AccountingForExpirationDates.Controllers
 
             if (action.StatusCode == RequestStatus.OK)
             {
-                return Ok(action.Description);
+                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
             }
             else
             {
-                return BadRequest(action.Description);
+                return Ok(new { Status = action.StatusCode.ToString(), Message = action.Description });
             }
 
         }
@@ -111,11 +111,11 @@ namespace AccountingForExpirationDates.Controllers
 
             if (action.status.StatusCode == RequestStatus.OK)
             {
-                return Ok(action.data);
+                return Ok(new { Status = action.status.StatusCode.ToString(), Message = action.status.Description, Data =  action.data});
             }
             else
             {
-                return BadRequest(action.status.Description);
+                return Ok(new { Status = action.status.StatusCode.ToString(), Message = action.status.Description });
             }
         }
     }

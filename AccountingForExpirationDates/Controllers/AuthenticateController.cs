@@ -51,11 +51,12 @@ namespace AccountingForExpirationDates.Controllers
 
                 return Ok(new
                 {
+                    Status = "Success",
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "invalid username or password" });
         }
 
         [HttpPost]
@@ -64,7 +65,7 @@ namespace AccountingForExpirationDates.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User already exists!" });
 
             IdentityUser user = new()
             {
@@ -74,7 +75,7 @@ namespace AccountingForExpirationDates.Controllers
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
